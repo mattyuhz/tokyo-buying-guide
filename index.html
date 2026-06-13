@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{--paper:#ffffff;--hair:#E3E2DD;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:#000000;
+       font:500 13px/1.35 "Helvetica Neue",Inter,sans-serif;
+       letter-spacing:.03em;text-transform:lowercase;-webkit-font-smoothing:antialiased;}
+  body *{font-size:13px !important;font-weight:500 !important;line-height:1.35 !important;
+         letter-spacing:.03em !important;text-transform:lowercase !important;color:#000000 !important;}
+  a{text-decoration:none;}
+
+  /* shell */
+  .shell{max-width:1360px;margin:0 auto;padding:48px 20px 80px;}
+  .nav-wrap{}
+
+  /* view filter chips — inline at top */
+  .view-chips{display:flex;align-items:center;gap:6px;padding:12px 20px;
+             position:fixed;top:0;left:0;right:0;z-index:90;
+             background:#ffffff;
+             border-bottom:1px solid #E3E2DD;}
+  .view-title{font-family:"Helvetica Neue",Inter,sans-serif !important;
+              font-size:13px !important;font-weight:500 !important;
+              letter-spacing:.03em !important;text-transform:lowercase !important;
+              white-space:nowrap;margin-right:auto;}
+  .view-chip{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+             font-size:12px !important;font-weight:500 !important;
+             letter-spacing:.06em !important;text-transform:uppercase !important;
+             line-height:1 !important;color:#000000 !important;
+             background:none;border:1px solid #9B9A96;border-radius:999px;
+             padding:8px 16px;cursor:pointer;white-space:nowrap;
+             transition:background .15s,border-color .15s;}
+  .view-chip.on{background:#000000 !important;border-color:#000000 !important;color:#ffffff !important;}
+  .view-chip.on{color:#ffffff !important;}
+  .view-chip.on *{color:#ffffff !important;}
+
+  /* floating map button */
+  .map-fab{position:fixed;bottom:max(24px,calc(env(safe-area-inset-bottom) + 12px));
+           right:20px;z-index:100;
+           width:48px;height:48px;border-radius:50%;
+           background:#000000;border:none;cursor:pointer;
+           display:flex;align-items:center;justify-content:center;
+           box-shadow:0 2px 12px rgba(0,0,0,.25);
+           transition:background .15s;}
+  .map-fab:active{background:#333;}
+  .map-fab svg{width:20px;height:20px;display:block;}
+
+  /* want button on card — circle bookmark */
+  .want-btn{flex:none;width:20px;height:20px;border-radius:50%;
+            border:1.5px solid #9B9A96;background:none;cursor:pointer;padding:0;
+            transition:background .15s,border-color .15s;display:flex;
+            align-items:center;justify-content:center;}
+  .want-btn.wanted{background:#000000 !important;border-color:#000000 !important;}
+  .want-btn svg{width:10px;height:10px;display:block;}
+
+  /* nav */
+  .nav2{margin:20px 0 0;border-bottom:1px solid #B8B7B1;}
+  .nav-title{padding:20px 0 40px;display:flex;align-items:center;}
+  .nav-title-text{font-family:"Helvetica Neue",Inter,sans-serif !important;font-size:13px !important;font-weight:500 !important;letter-spacing:.03em !important;text-transform:lowercase !important;line-height:1.35 !important;color:#000000 !important;flex:none;}
+  .filterrow{display:flex;flex-direction:column;gap:12px;padding:0 0 20px;}
+  .filterrow + .filterrow{border-top:1px solid #B8B7B1;padding-top:24px;}
+  .row-label{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;font-size:12px !important;font-weight:500 !important;letter-spacing:.06em !important;text-transform:uppercase !important;line-height:1 !important;color:#000000 !important;white-space:nowrap;}
+  .pill-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill,.pill *{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+    font-size:12px !important;font-weight:500 !important;
+    letter-spacing:.06em !important;text-transform:uppercase !important;
+    line-height:1 !important;color:#000000 !important;}
+  .tag-label,.tag-label *{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+             font-size:12px !important;line-height:1 !important;
+             text-transform:uppercase !important;letter-spacing:.06em !important;color:#000000 !important;}
+  .tag-label{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:4px;}
+  .tag-sep{color:#000000 !important;}
+  .tag-maps{text-decoration:none !important;display:inline-flex;align-items:center;gap:4px;color:#5533FF !important;}
+  .pill{flex:none;background:none;border:1px solid #9B9A96;border-radius:999px;
+        padding:8px 16px;cursor:pointer;white-space:nowrap;}
+
+  .pill.on{background:#000000 !important;border-color:#000000 !important;color:#ffffff !important;
+           box-shadow:0 1px 3px rgba(16,16,16,.1);}
+  .pill.on,.pill.on *{color:#ffffff !important;}
+  .pill:focus-visible{outline:2px solid #000000;outline-offset:2px;}
+
+  /* card image */
+  .card-img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center;
+            display:block;margin-bottom:16px;}
+
+  .feed{display:grid;grid-template-columns:1fr;gap:0;padding:0;background:var(--paper);}
+  .card{background:var(--paper);padding:16px 0;display:block;}
+  .card.hidden{display:none;}
+  .cinfo{display:flex;flex-direction:column;gap:4px;padding:0 0 20px;}
+  .cinfo-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .cinfo-text{display:flex;flex-direction:column;gap:4px;flex:1;}
+
+  /* divider between borderless cards */
+  .card.has-divider{border-bottom:1px solid #B8B7B1;}
+
+  /* bookmark icon button */
+  .cbv-square{flex:none;width:32px;height:32px;background:none;border:none;
+    cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+  .cbv-square svg .bm-fill{fill:none;transition:fill .15s,stroke .15s;}
+  .cbv-square svg .bm-stroke{stroke:#B8B7B1;transition:stroke .15s;}
+  .cbv-square.checked svg .bm-fill{fill:#5533FF;}
+  .cbv-square.checked svg .bm-stroke{stroke:#5533FF;}
+
+  /* got button — simple, only shown on terraform-style simple cards */
+  .got-btn{display:inline-flex;align-items:center;justify-content:center;
+           width:26px;height:26px;border-radius:50%;
+           background:none;border:1px solid rgba(0,0,0,0.64);
+           padding:0;cursor:pointer;flex:none;opacity:0.64;
+           transition:background .15s,border-color .15s,opacity .15s;}
+  .got-btn.done{opacity:1 !important;}
+
+  .got-btn.done{background:#000 !important;border-color:#000 !important;}
+
+  /* in-card got toggle for montbell-style cards */
+  .got-toggle{display:inline-flex;align-items:center;gap:6px;
+              background:none;border:1px solid #B8B7B1;border-radius:999px;
+              padding:6px 14px;cursor:pointer;}
+  .got-toggle-label{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+                    font-size:12px !important;font-weight:500 !important;
+                    letter-spacing:.06em !important;text-transform:uppercase !important;
+                    color:#000 !important;}
+  .got-toggle-check{display:none;}
+  .got-toggle.done{background:#000 !important;border-color:#000 !important;}
+  .got-toggle.done .got-toggle-label{color:#fff !important;}
+
+  /* maps */
+  .mapslink{display:inline-block;margin-top:6px;}
+  .title-maps{text-decoration:none !important;color:#000 !important;}
+  .title-maps:hover{opacity:.6;}
+
+  /* items section */
+  /* items expander — collapsed = pill button, open = bordered container */
+  .items-section{margin-top:12px;}
+  .items-toggle{display:flex;align-items:center;gap:8px;justify-content:flex-start;
+                cursor:pointer;padding:12px 16px;background:none;width:100%;
+                border:1px solid #B8B7B1;border-radius:8px;
+                justify-content:center;
+                transition:border-color .15s,border-radius .15s;}
+  .items-section.open .items-toggle{border-radius:8px 8px 0 0;border-bottom-color:transparent;}
+  .items-toggle-label{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;font-size:12px !important;font-weight:500 !important;letter-spacing:.06em !important;text-transform:uppercase !important;line-height:1 !important;color:#000000 !important;}
+  .items-toggle-label,.items-toggle-label *{color:#000000 !important;}
+  .items-chevron{width:16px;height:16px;flex:none;transition:transform .2s ease;
+                 display:flex;align-items:center;justify-content:center;}
+  .items-chevron svg{display:block;}
+  .items-section.open .items-chevron{transform:rotate(180deg);}
+  .items-list{display:none;flex-direction:column;
+              border:1px solid #B8B7B1;border-top:none;border-radius:0 0 8px 8px;
+              padding:0 16px;}
+  .items-section.open .items-list{display:flex;}
+  .item{padding:16px 0;border-bottom:1px solid #E3E2DD;
+        cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.04);}
+  .item:active{background:rgba(0,0,0,.02);}
+  /* item-check is now visual only, pointer handled by parent */
+  .item .item-check{pointer-events:none;}
+  .item:last-child{border-bottom:none;}
+  .item:last-child{}
+  .item-row{display:flex;align-items:center;gap:12px;}
+  .item-check{flex:none;width:16px;height:16px;border-radius:50%;
+              border:1px solid #9B9A96;cursor:pointer;background:none;padding:0;}
+  .item-check.checked{background:#000000;border-color:#000000;}
+  .item-body{flex:1;display:flex;flex-direction:column;gap:4px;}
+  .item-body p:first-child{font-family:"Helvetica Neue",Inter,sans-serif !important;font-size:13px !important;font-weight:500 !important;line-height:1.35 !important;letter-spacing:.03em !important;text-transform:lowercase !important;color:#000000 !important;}
+  .items-list .item-body p + p{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;font-size:12px !important;font-weight:500 !important;letter-spacing:.06em !important;text-transform:uppercase !important;line-height:1 !important;color:#000000 !important;}
+  .item-body.done > *{opacity:.3;text-decoration:line-through;text-decoration-thickness:1px;}
+
+  /* responsive grid */
+  @media(min-width:680px){
+    .feed{grid-template-columns:repeat(2,1fr);}
+    .card{padding:16px;}
+  }
+  @media(min-width:1000px){
+    .shell{padding:0 44px;}
+    .feed{grid-template-columns:repeat(3,1fr);}
+    .card{padding:16px;}
+  }
+  @media(min-width:1300px){.feed{grid-template-columns:repeat(4,1fr);}}
+  .card{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+  .card.in{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){.card{opacity:1;transform:none;transition:none;}}
+
+  /* map panel */
+  #map-panel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;}
+  #map-panel.active{display:block;}
+  #map-container{width:100%;height:100%;}
+  .feed-wrap{display:block;}
+  .feed-wrap.map-active{display:none;}
+  .nav-wrap.map-active{display:none;}
+  /* match leaflet zoom control exactly */
+  .leaflet-bar a{display:flex !important;align-items:center !important;justify-content:center !important;
+    font-size:18px !important;line-height:1 !important;}
+  /* locate button — same size/style as leaflet zoom buttons */
+  #locate-btn{position:absolute;top:84px;left:10px;z-index:1000;
+    width:30px;height:30px;background:#fff;border:2px solid rgba(0,0,0,.2);
+    border-top:none;border-radius:0 0 4px 4px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    /* larger tap target — invisible padding, offset to keep visual position */
+    padding:14px;margin:-14px;box-sizing:content-box;}
+  #locate-btn:active{background:#f4f4f4;}
+  #locate-btn svg{width:15px;height:15px;display:block;flex-shrink:0;}
+  /* leaflet popup overrides */
+  .leaflet-popup-content-wrapper{border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12);padding:0 !important;}
+  .leaflet-popup-content{margin:16px 12px !important;font-family:"Helvetica Neue",Inter,sans-serif;
+    font-size:13px;font-weight:500;letter-spacing:.03em;line-height:1.35;}
+  .leaflet-popup-content p{margin:0;}
+  .pop-name{font-weight:700;margin-bottom:2px !important;}
+  .pop-tag{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+    font-size:11px !important;letter-spacing:.06em !important;text-transform:uppercase !important;
+    color:#666 !important;margin-bottom:6px !important;}
+  .pop-maps{font-family:ui-monospace,"SF Mono",Menlo,monospace !important;
+    font-size:11px !important;letter-spacing:.06em !important;text-transform:uppercase !important;
+    color:#5533FF !important;text-decoration:none !important;display:block;margin-top:6px;}
+  .leaflet-popup-close-button{display:none !important;}
+  /* hide leaflet attribution */
+  .leaflet-control-attribution{display:none;}
+  .leaflet-popup-tip-container{display:none !important;}
+
+  /* --- exit animations --- */
+
+  /* PRIMARY: strike-through then blur out */
+  @keyframes strike-blur-fade{
+    0%{opacity:1;filter:blur(0)}
+    55%{opacity:1;filter:blur(0)}
+    100%{opacity:0;filter:blur(14px)}}
+  .exit-main{animation:strike-blur-fade .75s ease forwards;pointer-events:none;position:relative;overflow:hidden;}
+  .exit-main::after{content:'';position:absolute;top:50%;left:-100%;width:100%;height:2px;
+    background:#000;transform:translateY(-50%);
+    animation:sweep-line .35s cubic-bezier(.4,0,.2,1) .05s forwards;}
+  @keyframes sweep-line{0%{left:-100%}100%{left:100%}}
+
+
+</style>
+</head><body>
+<div class="view-chips" id="view-chips">
+<span class="view-title">tokyo buying guide</span>
+<button class="view-chip on" data-view="all">all</button>
+<button class="view-chip" data-view="want">want</button>
+<button class="view-chip" data-view="got">got</button>
+</div>
+<div class="shell">
+<div class="feed-wrap" id="feed-wrap">
+<div class="nav-wrap">
+<div class="nav2">
+<div class="filterrow">
+<span class="row-label">where</span>
+<div class="pill-group">
+<button class="pill tag-pill on" data-axis="n" data-val="anywhere">anywhere</button>
+<button class="pill tag-pill" data-axis="n" data-val="kitasando">kitasando</button>
+<button class="pill tag-pill" data-axis="n" data-val="harajuku">harajuku</button>
+<button class="pill tag-pill" data-axis="n" data-val="shibuya">shibuya</button>
+<button class="pill tag-pill" data-axis="n" data-val="shinjuku">shinjuku</button>
+<button class="pill tag-pill" data-axis="n" data-val="yoyogi">yoyogi</button>
+<button class="pill tag-pill" data-axis="n" data-val="nihonbashi">nihonbashi</button>
+</div>
+</div>
+<div class="filterrow">
+<span class="row-label">what</span>
+<div class="pill-group">
+<button class="pill tag-pill on" data-axis="c" data-val="anything">anything</button>
+<button class="pill tag-pill" data-axis="c" data-val="coffee">coffee</button>
+<button class="pill tag-pill" data-axis="c" data-val="matcha">matcha</button>
+<button class="pill tag-pill" data-axis="c" data-val="outdoor gear">outdoor gear</button>
+<button class="pill tag-pill" data-axis="c" data-val="skincare">skincare</button>
+<button class="pill tag-pill" data-axis="c" data-val="food">food</button>
+<button class="pill tag-pill" data-axis="c" data-val="clothing">clothing</button>
+<button class="pill tag-pill" data-axis="c" data-val="yarn">yarn</button>
+<button class="pill tag-pill" data-axis="c" data-val="home goods">home goods</button>
+<button class="pill tag-pill" data-axis="c" data-val="camera">camera</button>
+<button class="pill tag-pill" data-axis="c" data-val="food">food</button>
+</div>
+</div>
+</div>
+</div>
+<div class="feed" id="feed" style="margin-top:16px;">
+<article class="card has-divider" data-category="coffee" data-id="terraform" data-neighborhood="kitasando" data-type="place"><img alt="terraform coffee" class="card-img" src="images/terraform-coffee.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/jUZA9TcFmzZxZeCw5" rel="noopener" target="_blank">terraform coffee <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+            kitasando
+            <span class="tag-sep">/</span> coffee
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:terraform"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:terraform"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="montbell-shibuya" data-neighborhood="shibuya" data-type="product"><img alt="mont-bell shibuya" class="card-img" src="images/mont-bell-shibuya.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/2uLLzFCYXCLEczeE7" rel="noopener" target="_blank">mont-bell shibuya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+            shibuya
+            <span class="tag-sep">/</span> outdoor gear
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:montbell-shibuya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:montbell-shibuya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div><div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">16 items available here</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:shibuya:tachyon-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:tachyon-pants"></button>
+<div class="item-body" data-body-id="item:shibuya:tachyon-pants">
+<p>tachyon pants</p>
+<p>ultralight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:dynamo-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:dynamo-pants"></button>
+<div class="item-body" data-body-id="item:shibuya:dynamo-pants">
+<p>dynamo pants</p>
+<p>lightweight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:versalite-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:versalite-pants"></button>
+<div class="item-body" data-body-id="item:shibuya:versalite-pants">
+<p>versalite pants</p>
+<p>midweight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:storm-cruiser-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:storm-cruiser-pants"></button>
+<div class="item-body" data-body-id="item:shibuya:storm-cruiser-pants">
+<p>storm cruiser pants</p>
+<p>heavyweight / hardshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:versalite-shell">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:versalite-shell"></button>
+<div class="item-body" data-body-id="item:shibuya:versalite-shell">
+<p>versalite shell</p>
+<p>super dry-tec 3l hardshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:tachyon-anorak">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:tachyon-anorak"></button>
+<div class="item-body" data-body-id="item:shibuya:tachyon-anorak">
+<p>tachyon anorak</p>
+<p>ultralight windshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:wic-uvtect-hoody">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:wic-uvtect-hoody"></button>
+<div class="item-body" data-body-id="item:shibuya:wic-uvtect-hoody">
+<p>wic uvtect upf50+ hoody</p>
+<p>sun hoody, upf 50+</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:stellaridge-tent">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:stellaridge-tent"></button>
+<div class="item-body" data-body-id="item:shibuya:stellaridge-tent">
+<p>stellaridge tent + snow fly</p>
+<p>3-season + winter extension</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:trail-action-gloves">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:trail-action-gloves"></button>
+<div class="item-body" data-body-id="item:shibuya:trail-action-gloves">
+<p>trail action gloves</p>
+<p>light trail / approach</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:goretex-overmitts">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:goretex-overmitts"></button>
+<div class="item-body" data-body-id="item:shibuya:goretex-overmitts">
+<p>gore-tex overmitts</p>
+<p>hardshell overmitt</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:hats">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:hats"></button>
+<div class="item-body" data-body-id="item:shibuya:hats">
+<p>hats</p>
+<p>trail sun hats + beanies</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:buffs">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:buffs"></button>
+<div class="item-body" data-body-id="item:shibuya:buffs">
+<p>neck gaiters / buffs</p>
+<p>wic + fleece options</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:gaiters">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:gaiters"></button>
+<div class="item-body" data-body-id="item:shibuya:gaiters">
+<p>gaiters</p>
+<p>trail to alpine sizing</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:dry-bags">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:dry-bags"></button>
+<div class="item-body" data-body-id="item:shibuya:dry-bags">
+<p>dry + compression bags</p>
+<p>stuff sacks, dry bags, compression rolls</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:down-booties">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:down-booties"></button>
+<div class="item-body" data-body-id="item:shibuya:down-booties">
+<p>camp + down booties</p>
+<p>ul insulated camp footwear</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shibuya:ul-umbrella">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shibuya:ul-umbrella"></button>
+<div class="item-body" data-body-id="item:shibuya:ul-umbrella">
+<p>u.l. trekking umbrella</p>
+<p>ultralight, sun + rain</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="montbell-shinjuku" data-neighborhood="shinjuku" data-type="product"><img alt="mont-bell shinjuku minamiguchi" class="card-img" src="images/mont-bell-shinjuku-minamiguchi.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/1NAmAYTKpx6oGPGg8" rel="noopener" target="_blank">mont-bell shinjuku minamiguchi <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:montbell-shinjuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:montbell-shinjuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div><div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">16 items available here</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:shinjuku:tachyon-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:tachyon-pants"></button>
+<div class="item-body" data-body-id="item:shinjuku:tachyon-pants">
+<p>tachyon pants</p>
+<p>ultralight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:dynamo-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:dynamo-pants"></button>
+<div class="item-body" data-body-id="item:shinjuku:dynamo-pants">
+<p>dynamo pants</p>
+<p>lightweight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:versalite-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:versalite-pants"></button>
+<div class="item-body" data-body-id="item:shinjuku:versalite-pants">
+<p>versalite pants</p>
+<p>midweight</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:storm-cruiser-pants">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:storm-cruiser-pants"></button>
+<div class="item-body" data-body-id="item:shinjuku:storm-cruiser-pants">
+<p>storm cruiser pants</p>
+<p>heavyweight / hardshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:versalite-shell">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:versalite-shell"></button>
+<div class="item-body" data-body-id="item:shinjuku:versalite-shell">
+<p>versalite shell</p>
+<p>super dry-tec 3l hardshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:tachyon-anorak">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:tachyon-anorak"></button>
+<div class="item-body" data-body-id="item:shinjuku:tachyon-anorak">
+<p>tachyon anorak</p>
+<p>ultralight windshell</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:wic-uvtect-hoody">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:wic-uvtect-hoody"></button>
+<div class="item-body" data-body-id="item:shinjuku:wic-uvtect-hoody">
+<p>wic uvtect upf50+ hoody</p>
+<p>sun hoody, upf 50+</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:stellaridge-tent">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:stellaridge-tent"></button>
+<div class="item-body" data-body-id="item:shinjuku:stellaridge-tent">
+<p>stellaridge tent + snow fly</p>
+<p>3-season + winter extension</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:trail-action-gloves">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:trail-action-gloves"></button>
+<div class="item-body" data-body-id="item:shinjuku:trail-action-gloves">
+<p>trail action gloves</p>
+<p>light trail / approach</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:goretex-overmitts">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:goretex-overmitts"></button>
+<div class="item-body" data-body-id="item:shinjuku:goretex-overmitts">
+<p>gore-tex overmitts</p>
+<p>hardshell overmitt</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:hats">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:hats"></button>
+<div class="item-body" data-body-id="item:shinjuku:hats">
+<p>hats</p>
+<p>trail sun hats + beanies</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:buffs">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:buffs"></button>
+<div class="item-body" data-body-id="item:shinjuku:buffs">
+<p>neck gaiters / buffs</p>
+<p>wic + fleece options</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:gaiters">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:gaiters"></button>
+<div class="item-body" data-body-id="item:shinjuku:gaiters">
+<p>gaiters</p>
+<p>trail to alpine sizing</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:dry-bags">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:dry-bags"></button>
+<div class="item-body" data-body-id="item:shinjuku:dry-bags">
+<p>dry + compression bags</p>
+<p>stuff sacks, dry bags, compression rolls</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:down-booties">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:down-booties"></button>
+<div class="item-body" data-body-id="item:shinjuku:down-booties">
+<p>camp + down booties</p>
+<p>ul insulated camp footwear</p>
+</div>
+</div></div>
+</div>
+<div class="item" data-item-check-id="item:shinjuku:ul-umbrella">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:shinjuku:ul-umbrella"></button>
+<div class="item-body" data-body-id="item:shinjuku:ul-umbrella">
+<p>u.l. trekking umbrella</p>
+<p>ultralight, sun + rain</p>
+</div>
+</div></div>
+</div></div>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="hada-labo-shirojyun-premium" data-neighborhood="anywhere" data-type="product"><img alt="hada labo shirojyun premium toner" class="card-img" src="images/hada-labo-shirojyun-premium-toner.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>hada labo · shirojyun premium toner</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> toner
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:hada-labo-shirojyun-premium"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hada-labo-shirojyun-premium"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="matsuyama-hadauru-cream" data-neighborhood="anywhere" data-type="product"><img alt="matsuyama hadauru moisturizing cream" class="card-img" src="images/matsuyama-hadauru-moisturizing-cream.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>matsuyama · hadauru moisturizing cream</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> moisturizer
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:matsuyama-hadauru-cream"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:matsuyama-hadauru-cream"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="curel-intensive-facial-cream" data-neighborhood="anywhere" data-type="product"><img alt="curél intensive moisture facial cream" class="card-img" src="images/curl-intensive-moisture-facial-cream.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>curél · intensive moisture facial cream</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> moisturizer
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:curel-intensive-facial-cream"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:curel-intensive-facial-cream"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="anessa-gold" data-neighborhood="anywhere" data-type="product"><img alt="anessa perfect uv sunscreen gold" class="card-img" src="images/anessa-perfect-uv-sunscreen-gold.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>anessa · perfect uv sunscreen (gold)</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> sunscreen
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:anessa-gold"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:anessa-gold"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="anessa-mild" data-neighborhood="anywhere" data-type="product"><img alt="anessa perfect uv sunscreen mild" class="card-img" src="images/anessa-perfect-uv-sunscreen-mild.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>anessa · perfect uv sunscreen mild</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> sunscreen
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:anessa-mild"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:anessa-mild"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="skincare" data-id="biore-athlizm" data-neighborhood="anywhere" data-type="product"><img alt="bioré uv athlizm sunscreen" class="card-img" src="images/bior-uv-athlizm-sunscreen.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>bioré · uv athlizm sunscreen</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> sunscreen
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:biore-athlizm"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:biore-athlizm"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card" data-category="skincare" data-id="curel-uv" data-neighborhood="anywhere" data-type="product"><img alt="curél uv milk sunscreen" class="card-img" src="images/curl-uv-milk-sunscreen.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>curél · uv milk sunscreen</p>
+<p class="tag-label">
+              anywhere
+              <span class="tag-sep">/</span> skincare
+              <span class="tag-sep">/</span> sunscreen
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:curel-uv"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:curel-uv"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="klattermusen" data-neighborhood="harajuku" data-type="product"><img alt="klättermusen" class="card-img" src="images/klttermusen.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/z51LUNeFWyZuGpcR6" rel="noopener" target="_blank">klättermusen <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:klattermusen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:klattermusen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="playmountain" data-neighborhood="kitasando" data-type="product"><img alt="playmountain" class="card-img" src="images/playmountain.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/f4Ueq5SSo99Ts7538" rel="noopener" target="_blank">playmountain <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              kitasando
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:playmountain"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:playmountain"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="yarn" data-id="amimono-spin" data-neighborhood="shibuya" data-type="product"><img alt="amimono spin" class="card-img" src="images/amimono-spin.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/g2jXuRd6gcm82SwJ7" rel="noopener" target="_blank">amimono spin <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> yarn
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:amimono-spin"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:amimono-spin"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="yarn" data-id="daruma" data-neighborhood="harajuku" data-type="product"><img alt="daruma jeans" class="card-img" src="images/daruma-jeans.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/9mAUtSQ94729NTpUA" rel="noopener" target="_blank">daruma <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> yarn
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:daruma"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:daruma"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="clothing" data-id="yumiko-iihoshi" data-neighborhood="shibuya" data-type="product"><img alt="yumiko iihoshi porcelain" class="card-img" src="images/yumiko-iihoshi-porcelain.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/CcMNL6SFoth8a17C6" rel="noopener" target="_blank">yumiko iihoshi porcelain <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> clothing
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:yumiko-iihoshi"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:yumiko-iihoshi"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="and-wander" data-neighborhood="shibuya" data-type="product"><img alt="and wander · miyashita park" class="card-img" src="images/and-wander--miyashita-park.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/dqebC14YxjY632mL8" rel="noopener" target="_blank">and wander · miyashita park <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:and-wander"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:and-wander"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="hatoya" data-neighborhood="yoyogi" data-type="place"><img alt="hatoya" class="card-img" src="images/hatoya.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.app.goo.gl/FVXVtj8BbTcDFt869" rel="noopener" target="_blank">hatoya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              yoyogi
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:hatoya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hatoya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="acid-coffee" data-neighborhood="yoyogi" data-type="place"><img alt="acid coffee tokyo" class="card-img" src="images/acid-coffee-tokyo.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJCXHcr8KNGGAR5sEtuiXUQ6Y" rel="noopener" target="_blank">acid coffee tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              yoyogi-uehara
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:acid-coffee"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:acid-coffee"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="clothing" data-id="monocle-shop" data-neighborhood="yoyogi" data-type="product"><img alt="the monocle shop" class="card-img" src="images/the-monocle-shop.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJQ5gWu7KMGGARfrdKz7ao75I" rel="noopener" target="_blank">the monocle shop <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              tomigaya
+              <span class="tag-sep">/</span> clothing
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:monocle-shop"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:monocle-shop"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="nanga-harajuku" data-neighborhood="harajuku" data-type="product"><img alt="nanga · harajuku" class="card-img" src="images/nanga--harajuku.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJRbmieU-NGGAR0PRicu2sbHg" rel="noopener" target="_blank">nanga · harajuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nanga-harajuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nanga-harajuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="koffee-mameya" data-neighborhood="harajuku" data-type="place"><img alt="koffee mameya" class="card-img" src="images/koffee-mameya.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJB1oleKOMGGAR_10GNeoySkY" rel="noopener" target="_blank">koffee mameya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              omotesando
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:koffee-mameya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:koffee-mameya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="fuglen" data-neighborhood="yoyogi" data-type="place"><img alt="fuglen tokyo" class="card-img" src="images/fuglen-tokyo.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJrWB6lbKMGGARp0QB0mMSNe4" rel="noopener" target="_blank">fuglen tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              tomigaya
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:fuglen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:fuglen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="camera" data-id="map-camera" data-neighborhood="shinjuku" data-type="product"><img alt="map camera" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ50R7W9GMGGAR4GZfxnwj2Qg" rel="noopener" target="_blank">map camera <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> camera
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:map-camera"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:map-camera"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="camera" data-id="yodobashi-shinjuku" data-neighborhood="shinjuku" data-type="product"><img alt="yodobashi camera · shinjuku west" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJh9EUPNGMGGAR1Q9xRKA2-TA" rel="noopener" target="_blank">yodobashi camera · shinjuku west <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> camera
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:yodobashi-shinjuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:yodobashi-shinjuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="ippodo-marunouchi" data-neighborhood="nihonbashi" data-type="place"><img alt="ippodo tea · shin-marunouchi" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJxzhzE4GLGGAREm08ztodQgg" rel="noopener" target="_blank">ippodo tea · shin-marunouchi <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nihonbashi
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ippodo-marunouchi"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ippodo-marunouchi"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="seishoen" data-neighborhood="shinjuku" data-type="place"><img alt="seishō-en · shinjuku" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ_fFg4taMGGARv6sF775IqSc" rel="noopener" target="_blank">seishō-en · shinjuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:seishoen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:seishoen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="ikedaya" data-neighborhood="shinjuku" data-type="place"><img alt="ikedaya tea store" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ0yvb3NCMGGARp6zFflkmNE8" rel="noopener" target="_blank">ikedaya tea store <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku station
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ikedaya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ikedaya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="loft-shibuya" data-neighborhood="shibuya" data-type="place"><img alt="loft · shibuya" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJv1LdWqiMGGARtLjjcZL2Qsk" rel="noopener" target="_blank">loft · shibuya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:loft-shibuya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:loft-shibuya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="hands-shibuya" data-neighborhood="shibuya" data-type="place"><img alt="hands · shibuya" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJSXJEFqmMGGAR8ctb-YsQ_xM" rel="noopener" target="_blank">hands · shibuya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:hands-shibuya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hands-shibuya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="mountain-research" data-neighborhood="shibuya" data-type="product"><img alt="mountain research general store" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJB4Y74U2LGGARZXEMk6-c0ao" rel="noopener" target="_blank">mountain research · general store <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nakameguro
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:mountain-research"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:mountain-research"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="nicetime-mountain-gallery" data-neighborhood="shinjuku" data-type="product"><img alt="nicetime mountain gallery" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJf0VpP3rzGGARHVKbMDS3dO4" rel="noopener" target="_blank">nicetime mountain gallery <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              hatagaya
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nicetime-mountain-gallery"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nicetime-mountain-gallery"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="bullpen" data-neighborhood="yoyogi" data-type="product"><img alt="bullpen" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ0_6ttubzGGAR6nUjNrlPzXU" rel="noopener" target="_blank">bullpen <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nishihara
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:bullpen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:bullpen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="paddlers-coffee" data-neighborhood="yoyogi" data-type="place"><img alt="paddlers coffee" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJP7miMzrzGGAR6hTKywfADnY" rel="noopener" target="_blank">paddlers coffee <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nishihara
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:paddlers-coffee"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:paddlers-coffee"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="nadoya-no-katte" data-neighborhood="yoyogi" data-type="place"><img alt="nadoya no katte" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJfytt1W_zGGARPhNPg27l_5g" rel="noopener" target="_blank">nadoya no katte <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nishihara
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nadoya-no-katte"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nadoya-no-katte"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="aelu" data-neighborhood="yoyogi" data-type="product"><img alt="aelu" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJExmCwAPzGGAR4xcWGO2oy_8" rel="noopener" target="_blank">aelu <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nishihara
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:aelu"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:aelu"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="haritts" data-neighborhood="yoyogi" data-type="place"><img alt="haritts donuts &amp; coffee" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJEVYEa0jzGGARYZCh7YrDkls" rel="noopener" target="_blank">haritts donuts &amp; coffee <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              yoyogi-uehara
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:haritts"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:haritts"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="tsuta" data-neighborhood="yoyogi" data-type="place"><img alt="japanese soba noodles tsuta" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJVVVVVZiNGGAR_Dkw0TJHoN4" rel="noopener" target="_blank">japanese soba noodles tsuta <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              nishihara
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:tsuta"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:tsuta"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="switch-coffee" data-neighborhood="yoyogi" data-type="place"><img alt="switch coffee tokyo" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJKbcO7UvzGGARF60XGPdP7ic" rel="noopener" target="_blank">switch coffee tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              tomigaya
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:switch-coffee"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:switch-coffee"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="no-coffee" data-neighborhood="yoyogi" data-type="place"><img alt="no." class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ9XEPZ2nzGGAR-tGl9pgPSCA" rel="noopener" target="_blank">no. <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              yoyogi-uehara
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:no-coffee"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:no-coffee"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="kihara-tokyo" data-neighborhood="yoyogi" data-type="product"><img alt="kihara tokyo" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ6bL9QkaNGGARKstJFWtLLZ0" rel="noopener" target="_blank">kihara tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              tomigaya
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:kihara-tokyo"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:kihara-tokyo"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="ichiran-shibuya" data-neighborhood="shibuya" data-type="place"><img alt="ichiran · shibuya" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJOWucdKiMGGARbppa4b4CKA8" rel="noopener" target="_blank">ichiran · shibuya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ichiran-shibuya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ichiran-shibuya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="ichiran-harajuku" data-neighborhood="harajuku" data-type="place"><img alt="ichiran · harajuku" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJeSARaKSMGGARNZFd94VMO6k" rel="noopener" target="_blank">ichiran · harajuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ichiran-harajuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ichiran-harajuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="ichiran-shinjuku" data-neighborhood="shinjuku" data-type="place"><img alt="ichiran · shinjuku" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ8QwFX9qMGGARVm0p0caIeTk" rel="noopener" target="_blank">ichiran · shinjuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ichiran-shinjuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ichiran-shinjuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="tnf-mountain-shibuya" data-neighborhood="harajuku" data-type="product"><img alt="the north face mountain · shibuya" class="card-img" src="images/the-north-face-mountain--shibuya.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJf6pmQaSMGGARSlB3zGcrdzk" rel="noopener" target="_blank">the north face mountain · shibuya <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:tnf-mountain-shibuya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:tnf-mountain-shibuya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="tnf-alter" data-neighborhood="harajuku" data-type="product"><img alt="the north face alter" class="card-img" src="images/the-north-face-alter.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJdY4mRtqNGGARvP845lCt_Fw" rel="noopener" target="_blank">the north face alter <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:tnf-alter"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:tnf-alter"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="nanamica-daikanyama" data-neighborhood="shibuya" data-type="product"><img alt="nanamica · daikanyama" class="card-img" src="images/nanamica--daikanyama.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJvUpSgU-LGGARkFEppSO7_nc" rel="noopener" target="_blank">nanamica · daikanyama <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nanamica-daikanyama"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nanamica-daikanyama"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="nanamica-mountain" data-neighborhood="shibuya" data-type="product"><img alt="nanamica mountain · daikanyama" class="card-img" src="images/nanamica-mountain--daikanyama.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJG4uV3MqLGGARQA6ciu-_WHA" rel="noopener" target="_blank">nanamica mountain · daikanyama <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nanamica-mountain"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nanamica-mountain"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="arcteryx-harajuku" data-neighborhood="harajuku" data-type="product"><img alt="arc'teryx · harajuku" class="card-img" src="images/arcteryx--harajuku.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJH_T1OKSMGGAR8wpUUsHEf1U" rel="noopener" target="_blank">arc'teryx · harajuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:arcteryx-harajuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:arcteryx-harajuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="arcteryx-shinjuku" data-neighborhood="shinjuku" data-type="product"><img alt="arc'teryx · shinjuku (yodobashi)" class="card-img" src="images/arcteryx--shinjuku-yodobashi.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ6cMp6TqNGGARIzkoP21qFYw" rel="noopener" target="_blank">arc'teryx · shinjuku (yodobashi) <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shinjuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:arcteryx-shinjuku"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:arcteryx-shinjuku"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="alchemist-aoyama" data-neighborhood="harajuku" data-type="place"><img alt="alchemist aoyama" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJHx_PDiOLGGARaga07X1k1ME" rel="noopener" target="_blank">alchemist aoyama <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              aoyama
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:alchemist-aoyama"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:alchemist-aoyama"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="matcha" data-id="nanaya-aoyama" data-neighborhood="harajuku" data-type="place"><img alt="nanaya · aoyama" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJZdP5IF-LGGARWSR9fOn3ef0" rel="noopener" target="_blank">nanaya · aoyama <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              aoyama
+              <span class="tag-sep">/</span> matcha
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:nanaya-aoyama"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:nanaya-aoyama"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="maguro-to-shari" data-neighborhood="shibuya" data-type="place"><img alt="maguro-to-shari" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJCav9NKuLGGARan9qgutXwDc" rel="noopener" target="_blank">maguro-to-shari <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:maguro-to-shari"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:maguro-to-shari"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="hightide-miyashita" data-neighborhood="shibuya" data-type="product"><img alt="hightide store · miyashita park" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ9YP7E8aNGGARodFrHk2tpRc" rel="noopener" target="_blank">hightide store · miyashita park <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              shibuya
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:hightide-miyashita"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hightide-miyashita"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="yarn" data-id="walnut-tokyo" data-neighborhood="harajuku" data-type="product"><img alt="walnut tokyo" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ__-jU6GMGGARuzUW1haj0AI" rel="noopener" target="_blank">walnut tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              omotesando
+              <span class="tag-sep">/</span> yarn
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:walnut-tokyo"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:walnut-tokyo"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="ginza-onodera" data-neighborhood="harajuku" data-type="place"><img alt="ginza onodera · harajuku" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJyZOxItGNGGARWwp9_I4dZDA" rel="noopener" target="_blank">ginza onodera · harajuku <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ginza-onodera"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ginza-onodera"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="coffee" data-id="higuma-doughnuts" data-neighborhood="harajuku" data-type="place"><img alt="higuma doughnuts × coffee wrights" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJB4nX_beNGGARcvfg36ImbP8" rel="noopener" target="_blank">higuma doughnuts × coffee wrights <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              omotesando
+              <span class="tag-sep">/</span> coffee
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:higuma-doughnuts"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:higuma-doughnuts"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="snow-peak-omotesando" data-neighborhood="harajuku" data-type="product"><img alt="snow peak · omotesando" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJg1LJDKSMGGARA2ssWBx8qMw" rel="noopener" target="_blank">snow peak · omotesando <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:snow-peak-omotesando"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:snow-peak-omotesando"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="cibone-aoyama" data-neighborhood="harajuku" data-type="product"><img alt="cibone · aoyama" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJU_Hvu56MGGARX_Pm2BFlsdY" rel="noopener" target="_blank">cibone · aoyama <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              aoyama
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:cibone-aoyama"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:cibone-aoyama"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="hay-tokyo" data-neighborhood="harajuku" data-type="product"><img alt="hay tokyo" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJQWgdjWWNGGARntLls11hLXU" rel="noopener" target="_blank">hay tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              aoyama
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:hay-tokyo"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hay-tokyo"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="finetrack-tokyo" data-neighborhood="harajuku" data-type="product"><img alt="finetrack tokyo base" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJry76GKSMGGAR-yLbyXcvLkw" rel="noopener" target="_blank">finetrack tokyo base <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:finetrack-tokyo"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:finetrack-tokyo"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="hoek" data-neighborhood="harajuku" data-type="product"><img alt="hoek" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ__-jU6GMGGARaPS_Fc2MgAE" rel="noopener" target="_blank">hoek <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:hoek"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:hoek"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="home goods" data-id="labour-and-wait" data-neighborhood="harajuku" data-type="product"><img alt="labour and wait tokyo" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJB1oleKOMGGARFINMHGhPDnc" rel="noopener" target="_blank">labour and wait tokyo <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              harajuku
+              <span class="tag-sep">/</span> home goods
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:labour-and-wait"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:labour-and-wait"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="mukai" data-neighborhood="yoyogi" data-type="place"><img alt="mukai" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJ91tyuUONGGARCbGRh8EAjCQ" rel="noopener" target="_blank">mukai <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              tomigaya
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:mukai"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:mukai"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="have-more-curry" data-neighborhood="shibuya" data-type="place"><img alt="have more curry" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJj2IU81-LGGARy45pwNzML9s" rel="noopener" target="_blank">have more curry <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:have-more-curry"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:have-more-curry"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="pizza-slice" data-neighborhood="shibuya" data-type="place"><img alt="pizza slice" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJQ9wNFVuLGGARwWj00x_zdGc" rel="noopener" target="_blank">pizza slice <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:pizza-slice"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:pizza-slice"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="connected" data-neighborhood="shibuya" data-type="product"><img alt="connected" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJDQ-lGVuLGGARu_aC-BD3z08" rel="noopener" target="_blank">connected <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:connected"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:connected"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="outdoor gear" data-id="white-mountaineering" data-neighborhood="shibuya" data-type="product"><img alt="white mountaineering" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJtSBfxaOMGGARxkFmxZtxLTM" rel="noopener" target="_blank">white mountaineering <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> outdoor gear
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:white-mountaineering"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:white-mountaineering"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+<article class="card has-divider" data-category="food" data-id="laekker" data-neighborhood="shibuya" data-type="place"><img alt="laekker" class="card-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%235533FF'/%3E%3C/svg%3E"/><div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p><a class="title-maps" href="https://maps.google.com/?q=place_id:ChIJHWdI-UyLGGAR_phuy6jSne0" rel="noopener" target="_blank">laekker <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
+<p class="tag-label">
+              daikanyama
+              <span class="tag-sep">/</span> food
+            </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:laekker"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:laekker"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div></article>
+</div>
+</div><!-- /feed-wrap -->
+<button class="map-fab" id="map-fab" title="Map">
+<svg fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+<line x1="9" x2="9" y1="3" y2="18"></line><line x1="15" x2="15" y1="6" y2="21"></line>
+</svg>
+</button>
+<div id="map-panel">
+<div id="map-container"></div>
+<button id="locate-btn" title="Show my location">
+<svg fill="none" stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
+<circle cx="12" cy="12" r="7" stroke-dasharray="none"></circle>
+</svg>
+</button>
+</div>
+<script>
+  const state={n:"anywhere",c:"anything",s:"all"};
+
+  // --- collapse toggle ---
+  document.querySelectorAll(".items-toggle").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      e.stopPropagation();
+      btn.closest(".items-section").classList.toggle("open");
+    });
+  });
+
+  function cardDone(c){
+    const btn=c.querySelector(".check-btn,.cbv-square");
+    return btn&&chk.has(btn.dataset.checkId);
+  }
+  function applyFilters(){
+    document.querySelectorAll(".card").forEach(c=>{
+      const nOk=state.n==="anywhere"||(c.dataset.neighborhood!=="anywhere"&&c.dataset.neighborhood===state.n);
+      const cOk=!state.c||state.c==="anything"||c.dataset.category===state.c;
+      const id="place:"+c.dataset.id;
+      const isWanted=want.has(id);
+      const isDone=cardDone(c);
+      let sOk=true;
+      if(state.s==="want") sOk=isWanted&&!isDone;
+      else if(state.s==="got") sOk=isDone;
+      // "all" shows everything
+      c.classList.toggle("hidden",!(nOk&&cOk&&sOk));
+    });
+  }
+  document.querySelectorAll(".pill").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const axis=btn.dataset.axis,val=btn.dataset.val,key=axis==="n"?"n":axis==="c"?"c":"s";
+      if(axis==="n"){
+        if(state[key]===val&&val!=="anywhere"){
+          document.querySelectorAll(".pill[data-axis='n']").forEach(b=>b.classList.remove("on"));
+          document.querySelector(".pill[data-val='anywhere']").classList.add("on");
+          state[key]="anywhere";
+        } else {
+          document.querySelectorAll(".pill[data-axis='n']").forEach(b=>b.classList.remove("on"));
+          state[key]=val;btn.classList.add("on");
+        }
+      } else {
+        if(state[key]===val&&val!=="anything"){
+          document.querySelectorAll(".pill[data-axis='c']").forEach(b=>b.classList.remove("on"));
+          document.querySelector(".pill[data-val='anything']").classList.add("on");
+          state[key]="anything";
+        } else {
+          document.querySelectorAll(".pill[data-axis='"+axis+"']").forEach(b=>b.classList.remove("on"));
+          state[key]=val;btn.classList.add("on");
+        }
+      }
+      applyFilters();
+    });
+  });
+
+  // places with coordinates for map
+  const PLACES=[
+    {id:"terraform",name:"terraform coffee",neighborhood:"kitasando",category:"coffee",
+     lat:35.6772689,lng:139.7070943,
+     maps:"https://maps.app.goo.gl/jUZA9TcFmzZxZeCw5"},
+    {id:"montbell-shibuya",name:"mont-bell shibuya",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6623899,lng:139.697547,
+     maps:"https://maps.app.goo.gl/2uLLzFCYXCLEczeE7"},
+    {id:"montbell-shinjuku",name:"mont-bell shinjuku minamiguchi",neighborhood:"shinjuku",category:"outdoor gear",
+     lat:35.6875707,lng:139.6992203,
+     maps:"https://maps.app.goo.gl/1NAmAYTKpx6oGPGg8"},
+    {id:"klattermusen",name:"klättermusen",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6683886,lng:139.7041335,
+     maps:"https://maps.google.com/?q=place_id:ChIJ8YFOBwCNGGARhXs9EEqg8EE"},
+    {id:"playmountain",name:"playmountain",neighborhood:"kitasando",category:"home goods",
+     lat:35.6745271,lng:139.7064871,
+     maps:"https://maps.google.com/?q=place_id:ChIJD5Yqi7uMGGARHPwAzyFUZ8g"},
+    {id:"amimono-spin",name:"amimono spin",neighborhood:"shibuya",category:"yarn",
+     lat:35.6586221,lng:139.6937826,
+     maps:"https://maps.google.com/?q=place_id:ChIJa7cb5FGNGGAReD4_QiQCADo"},
+    {id:"daruma",name:"daruma jeans",neighborhood:"harajuku",category:"clothing",
+     lat:35.6698768,lng:139.7031797,
+     maps:"https://maps.google.com/?q=place_id:ChIJUwpphk2NGGARkHldDudAf1k"},
+    {id:"yumiko-iihoshi",name:"yumiko iihoshi porcelain",neighborhood:"shibuya",category:"clothing",
+     lat:35.6519618,lng:139.7056414,
+     maps:"https://maps.google.com/?q=place_id:ChIJpdK4RkyLGGARGZqcjxneoSk"},
+    {id:"and-wander",name:"and wander · miyashita park",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6622585,lng:139.7019016,
+     maps:"https://maps.google.com/?q=place_id:ChIJQ9y5Uw-NGGARFxLCfspVwr8"},
+    {id:"hatoya",name:"hatoya",neighborhood:"yoyogi",category:"matcha",
+     lat:35.6656199,lng:139.6925832,
+     maps:"https://maps.google.com/?q=place_id:ChIJvawMNhSNGGARbnFOONr4rLg"},
+    {id:"acid-coffee",name:"acid coffee tokyo",neighborhood:"yoyogi",category:"coffee",
+     lat:35.668352,lng:139.679981,
+     maps:"https://maps.google.com/?q=place_id:ChIJCXHcr8KNGGAR5sEtuiXUQ6Y"},
+    {id:"monocle-shop",name:"the monocle shop",neighborhood:"yoyogi",category:"clothing",
+     lat:35.6661109,lng:139.6918289,
+     maps:"https://maps.google.com/?q=place_id:ChIJQ5gWu7KMGGARfrdKz7ao75I"},
+    {id:"nanga-harajuku",name:"nanga · harajuku",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6658099,lng:139.7039482,
+     maps:"https://maps.google.com/?q=place_id:ChIJRbmieU-NGGAR0PRicu2sbHg"},
+    {id:"koffee-mameya",name:"koffee mameya",neighborhood:"harajuku",category:"coffee",
+     lat:35.668368,lng:139.710888,
+     maps:"https://maps.google.com/?q=place_id:ChIJB1oleKOMGGAR_10GNeoySkY"},
+    {id:"fuglen",name:"fuglen tokyo",neighborhood:"yoyogi",category:"coffee",
+     lat:35.6666181,lng:139.6923999,
+     maps:"https://maps.google.com/?q=place_id:ChIJrWB6lbKMGGARp0QB0mMSNe4"},
+    {id:"map-camera",name:"map camera",neighborhood:"shinjuku",category:"camera",
+     lat:35.6894431,lng:139.6972617,
+     maps:"https://maps.google.com/?q=place_id:ChIJ50R7W9GMGGAR4GZfxnwj2Qg"},
+    {id:"yodobashi-shinjuku",name:"yodobashi camera · shinjuku west",neighborhood:"shinjuku",category:"camera",
+     lat:35.6898832,lng:139.6979532,
+     maps:"https://maps.google.com/?q=place_id:ChIJh9EUPNGMGGAR1Q9xRKA2-TA"},
+    {id:"ippodo-marunouchi",name:"ippodo tea · shin-marunouchi",neighborhood:"nihonbashi",category:"matcha",
+     lat:35.6826912,lng:139.763924,
+     maps:"https://maps.google.com/?q=place_id:ChIJxzhzE4GLGGAREm08ztodQgg"},
+    {id:"seishoen",name:"seishō-en · shinjuku",neighborhood:"shinjuku",category:"matcha",
+     lat:35.692568,lng:139.698222,
+     maps:"https://maps.google.com/?q=place_id:ChIJ_fFg4taMGGARv6sF775IqSc"},
+    {id:"ikedaya",name:"ikedaya tea store",neighborhood:"shinjuku",category:"matcha",
+     lat:35.6904103,lng:139.6987575,
+     maps:"https://maps.google.com/?q=place_id:ChIJ0yvb3NCMGGARp6zFflkmNE8"},
+    {id:"loft-shibuya",name:"loft · shibuya",neighborhood:"shibuya",category:"matcha",
+     lat:35.6609346,lng:139.6997226,
+     maps:"https://maps.google.com/?q=place_id:ChIJv1LdWqiMGGARtLjjcZL2Qsk"},
+    {id:"hands-shibuya",name:"hands · shibuya",neighborhood:"shibuya",category:"matcha",
+     lat:35.6620337,lng:139.6979319,
+     maps:"https://maps.google.com/?q=place_id:ChIJSXJEFqmMGGAR8ctb-YsQ_xM"},
+    {id:"mountain-research",name:"mountain research · general store",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6476567,lng:139.6959653,
+     maps:"https://maps.google.com/?q=place_id:ChIJB4Y74U2LGGARZXEMk6-c0ao"},
+    {id:"nicetime-mountain-gallery",name:"nicetime mountain gallery",neighborhood:"shinjuku",category:"outdoor gear",
+     lat:35.6817356,lng:139.6751354,
+     maps:"https://maps.google.com/?q=place_id:ChIJf0VpP3rzGGARHVKbMDS3dO4"},
+    {id:"bullpen",name:"bullpen",neighborhood:"yoyogi",category:"home goods",
+     lat:35.6754642,lng:139.6783482,
+     maps:"https://maps.google.com/?q=place_id:ChIJ0_6ttubzGGAR6nUjNrlPzXU"},
+    {id:"paddlers-coffee",name:"paddlers coffee",neighborhood:"yoyogi",category:"coffee",
+     lat:35.6746807,lng:139.6787654,
+     maps:"https://maps.google.com/?q=place_id:ChIJP7miMzrzGGAR6hTKywfADnY"},
+    {id:"nadoya-no-katte",name:"nadoya no katte",neighborhood:"yoyogi",category:"coffee",
+     lat:35.6709328,lng:139.6807387,
+     maps:"https://maps.google.com/?q=place_id:ChIJfytt1W_zGGARPhNPg27l_5g"},
+    {id:"aelu",name:"aelu",neighborhood:"yoyogi",category:"home goods",
+     lat:35.6691268,lng:139.6793759,
+     maps:"https://maps.google.com/?q=place_id:ChIJExmCwAPzGGAR4xcWGO2oy_8"},
+    {id:"haritts",name:"haritts donuts & coffee",neighborhood:"yoyogi",category:"coffee",
+     lat:35.669331,lng:139.682016,
+     maps:"https://maps.google.com/?q=place_id:ChIJEVYEa0jzGGARYZCh7YrDkls"},
+    {id:"tsuta",name:"japanese soba noodles tsuta",neighborhood:"yoyogi",category:"food",
+     lat:35.6703963,lng:139.6824758,
+     maps:"https://maps.google.com/?q=place_id:ChIJVVVVVZiNGGAR_Dkw0TJHoN4"},
+    {id:"switch-coffee",name:"switch coffee tokyo",neighborhood:"yoyogi",category:"coffee",
+     lat:35.6692007,lng:139.6882621,
+     maps:"https://maps.google.com/?q=place_id:ChIJKbcO7UvzGGARF60XGPdP7ic"},
+    {id:"no-coffee",name:"no.",neighborhood:"yoyogi",category:"coffee",
+     lat:35.6690415,lng:139.6806948,
+     maps:"https://maps.google.com/?q=place_id:ChIJ9XEPZ2nzGGAR-tGl9pgPSCA"},
+    {id:"kihara-tokyo",name:"kihara tokyo",neighborhood:"yoyogi",category:"home goods",
+     lat:35.6666685,lng:139.6916439,
+     maps:"https://maps.google.com/?q=place_id:ChIJ6bL9QkaNGGARKstJFWtLLZ0"},
+    {id:"ichiran-shibuya",name:"ichiran · shibuya",neighborhood:"shibuya",category:"food",
+     lat:35.6611185,lng:139.7009846,
+     maps:"https://maps.google.com/?q=place_id:ChIJOWucdKiMGGARbppa4b4CKA8"},
+    {id:"ichiran-harajuku",name:"ichiran · harajuku",neighborhood:"harajuku",category:"food",
+     lat:35.6678693,lng:139.7052351,
+     maps:"https://maps.google.com/?q=place_id:ChIJeSARaKSMGGARNZFd94VMO6k"},
+    {id:"ichiran-shinjuku",name:"ichiran · shinjuku",neighborhood:"shinjuku",category:"food",
+     lat:35.6905859,lng:139.7028052,
+     maps:"https://maps.google.com/?q=place_id:ChIJ8QwFX9qMGGARVm0p0caIeTk"},
+    {id:"tnf-mountain-shibuya",name:"the north face mountain · shibuya",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6674794,lng:139.7049987,
+     maps:"https://maps.google.com/?q=place_id:ChIJf6pmQaSMGGARSlB3zGcrdzk"},
+    {id:"tnf-alter",name:"the north face alter",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6673596,lng:139.704879,
+     maps:"https://maps.google.com/?q=place_id:ChIJdY4mRtqNGGARvP845lCt_Fw"},
+    {id:"nanamica-daikanyama",name:"nanamica · daikanyama",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6486989,lng:139.7010538,
+     maps:"https://maps.google.com/?q=place_id:ChIJvUpSgU-LGGARkFEppSO7_nc"},
+    {id:"nanamica-mountain",name:"nanamica mountain · daikanyama",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6488952,lng:139.7010017,
+     maps:"https://maps.google.com/?q=place_id:ChIJG4uV3MqLGGARQA6ciu-_WHA"},
+    {id:"arcteryx-harajuku",name:"arc'teryx · harajuku",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6670759,lng:139.7046402,
+     maps:"https://maps.google.com/?q=place_id:ChIJH_T1OKSMGGAR8wpUUsHEf1U"},
+    {id:"arcteryx-shinjuku",name:"arc'teryx · shinjuku",neighborhood:"shinjuku",category:"outdoor gear",
+     lat:35.6898555,lng:139.6983635,
+     maps:"https://maps.google.com/?q=place_id:ChIJ6cMp6TqNGGARIzkoP21qFYw"},
+    {id:"alchemist-aoyama",name:"alchemist aoyama",neighborhood:"harajuku",category:"coffee",
+     lat:35.6610074,lng:139.7076371,
+     maps:"https://maps.google.com/?q=place_id:ChIJHx_PDiOLGGARaga07X1k1ME"},
+    {id:"nanaya-aoyama",name:"nanaya · aoyama",neighborhood:"harajuku",category:"matcha",
+     lat:35.6603386,lng:139.7075591,
+     maps:"https://maps.google.com/?q=place_id:ChIJZdP5IF-LGGARWSR9fOn3ef0"},
+    {id:"maguro-to-shari",name:"maguro-to-shari",neighborhood:"shibuya",category:"food",
+     lat:35.6607959,lng:139.7057061,
+     maps:"https://maps.google.com/?q=place_id:ChIJCav9NKuLGGARan9qgutXwDc"},
+    {id:"hightide-miyashita",name:"hightide store · miyashita park",neighborhood:"shibuya",category:"home goods",
+     lat:35.6605951,lng:139.7015597,
+     maps:"https://maps.google.com/?q=place_id:ChIJ9YP7E8aNGGARodFrHk2tpRc"},
+    {id:"walnut-tokyo",name:"walnut tokyo",neighborhood:"harajuku",category:"yarn",
+     lat:35.665187,lng:139.706992,
+     maps:"https://maps.google.com/?q=place_id:ChIJ__-jU6GMGGARuzUW1haj0AI"},
+    {id:"ginza-onodera",name:"ginza onodera · harajuku",neighborhood:"harajuku",category:"food",
+     lat:35.665805,lng:139.7100254,
+     maps:"https://maps.google.com/?q=place_id:ChIJyZOxItGNGGARWwp9_I4dZDA"},
+    {id:"higuma-doughnuts",name:"higuma doughnuts × coffee wrights",neighborhood:"harajuku",category:"coffee",
+     lat:35.6677675,lng:139.7104797,
+     maps:"https://maps.google.com/?q=place_id:ChIJB4nX_beNGGARcvfg36ImbP8"},
+    {id:"snow-peak-omotesando",name:"snow peak · omotesando",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6675904,lng:139.7059739,
+     maps:"https://maps.google.com/?q=place_id:ChIJg1LJDKSMGGARA2ssWBx8qMw"},
+    {id:"cibone-aoyama",name:"cibone · aoyama",neighborhood:"harajuku",category:"home goods",
+     lat:35.6674202,lng:139.7070377,
+     maps:"https://maps.google.com/?q=place_id:ChIJU_Hvu56MGGARX_Pm2BFlsdY"},
+    {id:"hay-tokyo",name:"hay tokyo",neighborhood:"harajuku",category:"home goods",
+     lat:35.6673795,lng:139.7069057,
+     maps:"https://maps.google.com/?q=place_id:ChIJQWgdjWWNGGARntLls11hLXU"},
+    {id:"finetrack-tokyo",name:"finetrack tokyo base",neighborhood:"harajuku",category:"outdoor gear",
+     lat:35.6666032,lng:139.7052881,
+     maps:"https://maps.google.com/?q=place_id:ChIJry76GKSMGGAR-yLbyXcvLkw"},
+    {id:"hoek",name:"hoek",neighborhood:"harajuku",category:"home goods",
+     lat:35.6736476,lng:139.7083446,
+     maps:"https://maps.google.com/?q=place_id:ChIJ__-jU6GMGGARaPS_Fc2MgAE"},
+    {id:"labour-and-wait",name:"labour and wait tokyo",neighborhood:"harajuku",category:"home goods",
+     lat:35.6742288,lng:139.706492,
+     maps:"https://maps.google.com/?q=place_id:ChIJB1oleKOMGGARFINMHGhPDnc"},
+    {id:"mukai",name:"mukai",neighborhood:"yoyogi",category:"food",
+     lat:35.669518,lng:139.6893334,
+     maps:"https://maps.google.com/?q=place_id:ChIJ91tyuUONGGARCbGRh8EAjCQ"},
+    {id:"have-more-curry",name:"have more curry",neighborhood:"shibuya",category:"food",
+     lat:35.6533986,lng:139.7047593,
+     maps:"https://maps.google.com/?q=place_id:ChIJj2IU81-LGGARy45pwNzML9s"},
+    {id:"pizza-slice",name:"pizza slice",neighborhood:"shibuya",category:"food",
+     lat:35.6535158,lng:139.7051046,
+     maps:"https://maps.google.com/?q=place_id:ChIJQ9wNFVuLGGARwWj00x_zdGc"},
+    {id:"connected",name:"connected",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6535468,lng:139.7043236,
+     maps:"https://maps.google.com/?q=place_id:ChIJDQ-lGVuLGGARu_aC-BD3z08"},
+    {id:"white-mountaineering",name:"white mountaineering",neighborhood:"shibuya",category:"outdoor gear",
+     lat:35.6529367,lng:139.7047119,
+     maps:"https://maps.google.com/?q=place_id:ChIJtSBfxaOMGGARxkFmxZtxLTM"},
+    {id:"laekker",name:"laekker",neighborhood:"shibuya",category:"food",
+     lat:35.6515844,lng:139.7043971,
+     maps:"https://maps.google.com/?q=place_id:ChIJHWdI-UyLGGAR_phuy6jSne0"},
+  ];
+
+  let mapInitialized=false;
+  let mapInstance=null;
+  let mapMarkers=[];
+
+  let watchId=null;
+
+  function updateDot(ll){
+    window._lastLL=ll;
+    if(!mapInstance) return;
+    if(!window._locDot){
+      window._locDot=L.circleMarker(ll,{
+        radius:8,fillColor:"#4A90E2",fillOpacity:1,
+        color:"#fff",weight:2
+      }).addTo(mapInstance);
+    } else {
+      window._locDot.setLatLng(ll);
+    }
+  }
+
+  function locateMe(recenter){
+    if(!navigator.geolocation){
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    // watchPosition fires immediately and keeps updating — no need for getCurrentPosition
+    if(watchId!==null){ navigator.geolocation.clearWatch(watchId); }
+    watchId=navigator.geolocation.watchPosition(
+      pos=>{
+        const ll=[pos.coords.latitude,pos.coords.longitude];
+        updateDot(ll);
+        if(recenter||!window._locatedOnce){
+          window._locatedOnce=true;
+          mapInstance.setView(ll,15);
+        }
+      },
+      err=>{
+        if(err.code===1) alert("Location permission denied. Please enable it in your browser settings.");
+        else alert("Could not get your location. Try again.");
+      },
+      {enableHighAccuracy:true,maximumAge:3000,timeout:15000}
+    );
+  }
+
+  function initMap(){
+    if(mapInitialized) return;
+    mapInitialized=true;
+    mapInstance=L.map("map-container",{zoomControl:true}).setView([35.6750,139.7030],14);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{
+      maxZoom:19,
+    }).addTo(mapInstance);
+    renderMarkers();
+    // locate button
+    document.getElementById("locate-btn").addEventListener("click",()=>{
+      if(window._lastLL && window._locatedOnce){
+        mapInstance.setView(window._lastLL,16);
+      } else {
+        locateMe(true);
+      }
+    });
+  }
+
+  function makeIcon(type){
+    if(type==="got"){
+      // solid black
+      return L.divIcon({className:"",
+        html:"<div style='width:12px;height:12px;border-radius:50%;background:#000;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);'></div>",
+        iconSize:[12,12],iconAnchor:[6,6],popupAnchor:[0,-10]});
+    } else if(type==="want"){
+      // solid purple
+      return L.divIcon({className:"",
+        html:"<div style='width:12px;height:12px;border-radius:50%;background:#5533FF;border:2px solid #fff;box-shadow:0 1px 4px rgba(85,51,255,.45);'></div>",
+        iconSize:[12,12],iconAnchor:[6,6],popupAnchor:[0,-10]});
+    } else {
+      // outline circle
+      return L.divIcon({className:"",
+        html:"<div style='width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #9B9A96;box-shadow:0 1px 3px rgba(0,0,0,.15);'></div>",
+        iconSize:[12,12],iconAnchor:[6,6],popupAnchor:[0,-10]});
+    }
+  }
+
+  function renderMarkers(){
+    mapMarkers.forEach(m=>m.remove());
+    mapMarkers=[];
+    if(!mapInstance) return;
+    PLACES.forEach(p=>{
+      const id="place:"+p.id;
+      const isGot=chk.has(id);
+      const isWant=want.has(id)&&!isGot;
+      const type=isGot?"got":isWant?"want":"all";
+      const icon=makeIcon(type);
+      const popup="<p class='pop-name'>"+p.name+"</p>"+
+        "<p class='pop-tag'>"+p.neighborhood+" / "+p.category+"</p>"+
+        "<a class='pop-maps' href='"+p.maps+"' target='_blank' rel='noopener'>open in maps →</a>";
+      const m=L.marker([p.lat,p.lng],{icon}).bindPopup(popup,{maxWidth:220,closeButton:false});
+      m.addTo(mapInstance);
+      mapMarkers.push(m);
+    });
+  }
+
+  // view chips (all / want / got)
+  document.querySelectorAll(".view-chip").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const val=btn.dataset.view;
+      if(state.s===val) return;
+      document.querySelectorAll(".view-chip").forEach(b=>b.classList.remove("on"));
+      btn.classList.add("on");
+      state.s=val;
+      applyFilters();
+    });
+  });
+
+  // floating map button
+  document.getElementById("map-fab").addEventListener("click",()=>{
+    const feedWrap=document.getElementById("feed-wrap");
+    const navWrap=document.querySelector(".nav-wrap");
+    const mapPanel=document.getElementById("map-panel");
+    const isOpen=mapPanel.classList.contains("active");
+    if(isOpen){
+      feedWrap.classList.remove("map-active");
+      navWrap.classList.remove("map-active");
+      mapPanel.classList.remove("active");
+      document.getElementById("map-fab").style.background="";
+    } else {
+      feedWrap.classList.add("map-active");
+      navWrap.classList.add("map-active");
+      mapPanel.classList.add("active");
+      document.getElementById("map-fab").style.background="#5533FF";
+      initMap();
+      setTimeout(()=>{
+        if(mapInstance) mapInstance.invalidateSize();
+        locateMe(false);
+      },200);
+    }
+  });
+
+  const LS="tbg-v2";
+  const LSW="tbg-v2-want";
+  function load(){try{return new Set(JSON.parse(localStorage.getItem(LS)||"[]"));}catch(e){return new Set();}}
+  function loadWant(){try{return new Set(JSON.parse(localStorage.getItem(LSW)||"[]"));}catch(e){return new Set();}}
+  function save(s){localStorage.setItem(LS,JSON.stringify([...s]));}
+  function saveWant(s){localStorage.setItem(LSW,JSON.stringify([...s]));}
+  let chk=load();
+  let want=loadWant();
+
+  // auto-visit: if all items in a card are checked, mark the place as visited too
+  // never remove a manually-set visit — only add
+  function syncAutoVisit(){
+    document.querySelectorAll(".card").forEach(card=>{
+      const items=[...card.querySelectorAll(".item-check")];
+      if(!items.length) return;
+      const placeId="place:"+card.dataset.id;
+      const allDone=items.every(i=>chk.has(i.dataset.checkId));
+      if(allDone) chk.add(placeId);
+    });
+  }
+
+  function render(){
+    document.querySelectorAll(".cbv-square").forEach(b=>{
+      b.classList.toggle("checked",want.has(b.dataset.checkId));
+    });
+    document.querySelectorAll(".item-check").forEach(b=>b.classList.toggle("checked",chk.has(b.dataset.checkId)));
+    document.querySelectorAll(".item-body").forEach(d=>d.classList.toggle("done",chk.has(d.dataset.bodyId)));
+    // got-btn: simple cards (terraform style)
+    document.querySelectorAll(".got-btn").forEach(b=>{
+      const id=b.dataset.gotId;
+      const isGot=chk.has(id);
+      b.classList.toggle("done",isGot);
+      const def=b.querySelector(".icon-default");
+      const done=b.querySelector(".icon-done");
+      if(def) def.style.display=isGot?"none":"";
+      if(done) done.style.display=isGot?"":"none";
+    });
+    
+  }
+
+  // animation map: card-id -> exit class
+  const EXIT_ANIM = {};
+  const DEFAULT_EXIT = 'exit-main';
+
+  const EXIT_DUR = {
+    'exit-main': 750,
+  };
+
+  function dismissCard(card, exitClass){
+    card.classList.add(exitClass);
+    setTimeout(()=>{
+      card.classList.remove(exitClass);
+      applyFilters();
+    }, EXIT_DUR[exitClass]||750);
+  }
+
+  function toggle(id, card){
+    const wasDone = card ? cardDone(card) : false;
+    chk.has(id)?chk.delete(id):chk.add(id);
+    syncAutoVisit();
+    save(chk);
+    render();
+    if(mapInstance) renderMarkers();
+    if(card){
+      const isDone = cardDone(card);
+      const exitClass = EXIT_ANIM[card.dataset.id] || DEFAULT_EXIT;
+      // animate out when card is about to disappear from current view
+      const willDisappear =
+        (state.s==="want" && isDone && !wasDone) ||   // marked done in want view
+        (state.s==="got" && !isDone && wasDone);          // unmarked in got view
+      if(willDisappear){
+        dismissCard(card, exitClass);
+      } else {
+        applyFilters();
+      }
+    } else {
+      applyFilters();
+    }
+  }
+
+  document.getElementById("feed").addEventListener("click",e=>{
+    const cb=e.target.closest(".check-btn");if(cb){toggle(cb.dataset.checkId, cb.closest(".card"));return;}
+    const ci=e.target.closest(".cbv-square");if(ci){
+      const id=ci.dataset.checkId;
+      want.has(id)?want.delete(id):want.add(id);
+      saveWant(want);
+      render();
+      applyFilters();
+      if(mapInstance) renderMarkers();
+      return;
+    }
+    const ic=e.target.closest(".item-check");if(ic){toggle(ic.dataset.checkId, ic.closest(".card"));return;}
+    const it=e.target.closest(".item[data-item-check-id]");if(it&&!e.target.closest(".item-check")){toggle(it.dataset.itemCheckId, it.closest(".card"));return;}
+    // got-btn (simple cards)
+    const gb=e.target.closest(".got-btn");if(gb){
+      const id=gb.dataset.gotId;
+      chk.has(id)?chk.delete(id):chk.add(id);
+      save(chk);render();applyFilters();
+      if(mapInstance) renderMarkers();
+      return;
+    }
+    
+  });
+
+  syncAutoVisit();
+  render();
+  applyFilters();
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:.08});
+  document.querySelectorAll(".card").forEach(c=>io.observe(c));
+</script>
+</div></body></html>
