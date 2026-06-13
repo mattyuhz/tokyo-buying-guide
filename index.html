@@ -235,6 +235,17 @@
   @keyframes sweep-line{0%{left:-100%}100%{left:100%}}
 
 
+
+  .item-thumb{width:48px;height:48px;object-fit:cover;border-radius:4px;flex:none;display:block;}
+  .item-row{display:flex;align-items:center;gap:12px;}
+
+  .brand-varieties{display:none;}
+  .brand-item.expanded .brand-varieties{display:block;}
+  .brand-item.expanded .brand-variety-toggle svg{transform:rotate(180deg);}
+  .brand-variety-toggle svg{transition:transform .2s;}
+  .sub-item .item-row{padding-left:0;}
+  .sub-item{border-bottom:1px solid #E8E7E3;}
+  .sub-item:last-child{border-bottom:none;}
 </style>
 </head><body>
 <div class="view-chips" id="view-chips">
@@ -935,6 +946,154 @@
             </p>
 </div>
 <button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ikedaya"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ikedaya"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div><div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">5 brands available here</span>
+</button>
+<div class="items-list">
+<div class="item brand-item" data-brand-id="horii-shichimeien">
+<div class="iinfo"><div class="item-row" style="align-items:center;">
+<img alt="horii shichimeien" class="item-thumb" src="images/horii-shichimeien.jpg"/>
+<div class="item-body"><p>horii shichimeien</p><p>matcha</p></div>
+<button aria-label="expand varieties" class="brand-variety-toggle" style="flex:none;background:none;border:none;padding:0;cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:0.5;">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4L6 8L10 4" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div></div>
+<div class="brand-varieties">
+<div class="item sub-item" data-item-check-id="item:horii-shichimeien:narino">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:narino"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:narino"><p>narino (single cultivar)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:horii-shichimeien:agata-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:agata-no-shiro"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:agata-no-shiro"><p>agata no shiro (usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:horii-shichimeien:todou-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:todou-mukashi"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:todou-mukashi"><p>todou mukashi (high usucha)</p></div>
+</div></div>
+</div>
+</div>
+</div><div class="item brand-item" data-brand-id="kanbayashi">
+<div class="iinfo"><div class="item-row" style="align-items:center;">
+<img alt="kanbayashi" class="item-thumb" src="images/kanbayashi.jpg"/>
+<div class="item-body"><p>kanbayashi</p><p>matcha</p></div>
+<button aria-label="expand varieties" class="brand-variety-toggle" style="flex:none;background:none;border:none;padding:0;cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:0.5;">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4L6 8L10 4" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div></div>
+<div class="brand-varieties">
+<div class="item sub-item" data-item-check-id="item:kanbayashi:biwa-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:biwa-no-shiro"></button>
+<div class="item-body" data-body-id="item:kanbayashi:biwa-no-shiro"><p>biwa no shiro (mid usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:kanbayashi:matsukaze-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:matsukaze-mukashi"></button>
+<div class="item-body" data-body-id="item:kanbayashi:matsukaze-mukashi"><p>matsukaze mukashi (entry koicha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:kanbayashi:ryokumo-no-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:ryokumo-no-mukashi"></button>
+<div class="item-body" data-body-id="item:kanbayashi:ryokumo-no-mukashi"><p>ryokumo no mukashi (koicha-grade)</p></div>
+</div></div>
+</div>
+</div>
+</div><div class="item brand-item" data-brand-id="marukyu-koyamaen">
+<div class="iinfo"><div class="item-row" style="align-items:center;">
+<img alt="marukyu koyamaen" class="item-thumb" src="images/marukyu-koyamaen.jpg"/>
+<div class="item-body"><p>marukyu koyamaen</p><p>matcha</p></div>
+<button aria-label="expand varieties" class="brand-variety-toggle" style="flex:none;background:none;border:none;padding:0;cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:0.5;">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4L6 8L10 4" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div></div>
+<div class="brand-varieties">
+<div class="item sub-item" data-item-check-id="item:marukyu-koyamaen:wako">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:wako"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:wako"><p>wako (top usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:marukyu-koyamaen:kinrin">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:kinrin"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:kinrin"><p>kinrin (premium usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:marukyu-koyamaen:chigi-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:chigi-no-shiro"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:chigi-no-shiro"><p>chigi no shiro (mid usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:marukyu-koyamaen:isuzu">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:isuzu"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:isuzu"><p>isuzu (entry usucha)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:marukyu-koyamaen:aoarashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:aoarashi"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:aoarashi"><p>aoarashi (entry usucha)</p></div>
+</div></div>
+</div>
+</div>
+</div><div class="item brand-item" data-brand-id="yamamasa-koyamaen">
+<div class="iinfo"><div class="item-row" style="align-items:center;">
+<img alt="yamamasa koyamaen" class="item-thumb" src="images/yamamasa-koyamaen.jpg"/>
+<div class="item-body"><p>yamamasa koyamaen</p><p>matcha</p></div>
+<button aria-label="expand varieties" class="brand-variety-toggle" style="flex:none;background:none;border:none;padding:0;cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:0.5;">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4L6 8L10 4" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div></div>
+<div class="brand-varieties">
+<div class="item sub-item" data-item-check-id="item:yamamasa-koyamaen:ogurayama">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:ogurayama"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:ogurayama"><p>ogurayama (premium ceremonial)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:yamamasa-koyamaen:shikibu-no-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:shikibu-no-mukashi"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:shikibu-no-mukashi"><p>shikibu no mukashi (high ceremonial)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:yamamasa-koyamaen:matsukaze">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:matsukaze"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:matsukaze"><p>matsukaze (daily usucha)</p></div>
+</div></div>
+</div>
+</div>
+</div><div class="item brand-item" data-brand-id="zenkyu-matcha">
+<div class="iinfo"><div class="item-row" style="align-items:center;">
+<img alt="zenkyu matcha" class="item-thumb" src="images/zenkyu-matcha.jpg"/>
+<div class="item-body"><p>zenkyu matcha</p><p>matcha</p></div>
+<button aria-label="expand varieties" class="brand-variety-toggle" style="flex:none;background:none;border:none;padding:0;cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:0.5;">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4L6 8L10 4" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div></div>
+<div class="brand-varieties">
+<div class="item sub-item" data-item-check-id="item:zenkyu-matcha:single-origin-okumidori">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:single-origin-okumidori"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:single-origin-okumidori"><p>single origin okumidori (single cultivar)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:zenkyu-matcha:signature-blend">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:signature-blend"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:signature-blend"><p>signature blend (ceremonial)</p></div>
+</div></div>
+</div><div class="item sub-item" data-item-check-id="item:zenkyu-matcha:uji-latte-blend">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:uji-latte-blend"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:uji-latte-blend"><p>uji latte blend (latte-grade)</p></div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
 </div></article><article class="card has-divider" data-category="matcha" data-id="seishoen" data-neighborhood="shinjuku" data-type="place"><img alt="seishoen" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="background:#5533FF;"/><div class="cinfo-inner" style="padding:0 0 12px;">
 <div class="cinfo-text">
 <p><a class="title-maps" href="https://maps.app.goo.gl/4GSzr6zdYvDu5uMXA" rel="noopener" target="_blank">seishō-en <span style="font-style:normal;letter-spacing:0;">→</span></a></p>
@@ -1130,6 +1289,295 @@
             </p>
 </div>
 <button aria-label="mark as visited" class="got-btn" data-entry-type="place" data-got-id="place:ippodo-marunouchi"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button><button class="cbv-square" data-check-id="place:ippodo-marunouchi"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div><div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">5 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:ippodo-marunouchi:kanza">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:ippodo-marunouchi:kanza"></button>
+<div class="item-body" data-body-id="item:ippodo-marunouchi:kanza">
+<p>kanza (flagship)</p>
+<p>silky umami / sweet aroma</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:ippodo-marunouchi:kuon">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:ippodo-marunouchi:kuon"></button>
+<div class="item-body" data-body-id="item:ippodo-marunouchi:kuon">
+<p>kuon (premium)</p>
+<p>rich umami / nutty / bright floral</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:ippodo-marunouchi:ummon">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:ippodo-marunouchi:ummon"></button>
+<div class="item-body" data-body-id="item:ippodo-marunouchi:ummon">
+<p>ummon (high-grade)</p>
+<p>robust umami / punchy / classic</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:ippodo-marunouchi:sayaka">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:ippodo-marunouchi:sayaka"></button>
+<div class="item-body" data-body-id="item:ippodo-marunouchi:sayaka">
+<p>sayaka (mid-grade)</p>
+<p>smooth / lightly sweet / most popular</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:ippodo-marunouchi:kan-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:ippodo-marunouchi:kan-no-shiro"></button>
+<div class="item-body" data-body-id="item:ippodo-marunouchi:kan-no-shiro">
+<p>kan-no-shiro (mid-grade)</p>
+<p>mild / refreshing / slight bitter finish</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article><article class="card has-divider" data-category="matcha" data-id="horii-shichimeien" data-neighborhood="anywhere" data-type="product">
+<img alt="horii-shichimeien" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/horii-shichimeien.jpg"/>
+<div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>horii shichimeien</p>
+<p class="tag-label">
+            anywhere
+            <span class="tag-sep">/</span> matcha
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:horii-shichimeien"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button>
+<button class="cbv-square" data-check-id="place:horii-shichimeien"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div>
+<div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">3 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:horii-shichimeien:narino">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:narino"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:narino">
+<p>narino (single cultivar)</p>
+<p>double umami / creamy</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:horii-shichimeien:agata-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:agata-no-shiro"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:agata-no-shiro">
+<p>agata no shiro (usucha)</p>
+<p>roasted nut / vanilla / mild umami</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:horii-shichimeien:todou-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:horii-shichimeien:todou-mukashi"></button>
+<div class="item-body" data-body-id="item:horii-shichimeien:todou-mukashi">
+<p>todou mukashi (high usucha)</p>
+<p>deep umami / nutty / smooth</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article><article class="card has-divider" data-category="matcha" data-id="kanbayashi" data-neighborhood="anywhere" data-type="product">
+<img alt="kanbayashi" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/kanbayashi.jpg"/>
+<div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>kanbayashi</p>
+<p class="tag-label">
+            anywhere
+            <span class="tag-sep">/</span> matcha
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:kanbayashi"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button>
+<button class="cbv-square" data-check-id="place:kanbayashi"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div>
+<div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">3 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:kanbayashi:biwa-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:biwa-no-shiro"></button>
+<div class="item-body" data-body-id="item:kanbayashi:biwa-no-shiro">
+<p>biwa no shiro (mid usucha)</p>
+<p>caramel sweet / macadamia / sandalwood</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:kanbayashi:matsukaze-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:matsukaze-mukashi"></button>
+<div class="item-body" data-body-id="item:kanbayashi:matsukaze-mukashi">
+<p>matsukaze mukashi (entry koicha)</p>
+<p>toasty nutty / bold umami</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:kanbayashi:ryokumo-no-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:kanbayashi:ryokumo-no-mukashi"></button>
+<div class="item-body" data-body-id="item:kanbayashi:ryokumo-no-mukashi">
+<p>ryokumo no mukashi (koicha-grade)</p>
+<p>deep umami / rich / full-bodied</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article><article class="card has-divider" data-category="matcha" data-id="marukyu-koyamaen" data-neighborhood="anywhere" data-type="product">
+<img alt="marukyu-koyamaen" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/marukyu-koyamaen.jpg"/>
+<div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>marukyu koyamaen</p>
+<p class="tag-label">
+            anywhere
+            <span class="tag-sep">/</span> matcha
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:marukyu-koyamaen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button>
+<button class="cbv-square" data-check-id="place:marukyu-koyamaen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div>
+<div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">5 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:marukyu-koyamaen:wako">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:wako"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:wako">
+<p>wako (top usucha)</p>
+<p>smooth umami / grassy / long sweet finish</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:marukyu-koyamaen:kinrin">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:kinrin"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:kinrin">
+<p>kinrin (premium usucha)</p>
+<p>creamy / rich umami / minimal bitterness</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:marukyu-koyamaen:chigi-no-shiro">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:chigi-no-shiro"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:chigi-no-shiro">
+<p>chigi no shiro (mid usucha)</p>
+<p>velvety / grassy / gentle acidity</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:marukyu-koyamaen:isuzu">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:isuzu"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:isuzu">
+<p>isuzu (entry usucha)</p>
+<p>sharp / acidic / rich amino acids</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:marukyu-koyamaen:aoarashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:marukyu-koyamaen:aoarashi"></button>
+<div class="item-body" data-body-id="item:marukyu-koyamaen:aoarashi">
+<p>aoarashi (entry usucha)</p>
+<p>robust / gentle bitter / bold</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article><article class="card has-divider" data-category="matcha" data-id="yamamasa-koyamaen" data-neighborhood="anywhere" data-type="product">
+<img alt="yamamasa-koyamaen" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/yamamasa-koyamaen.jpg"/>
+<div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>yamamasa koyamaen</p>
+<p class="tag-label">
+            anywhere
+            <span class="tag-sep">/</span> matcha
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:yamamasa-koyamaen"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button>
+<button class="cbv-square" data-check-id="place:yamamasa-koyamaen"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div>
+<div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">3 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:yamamasa-koyamaen:ogurayama">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:ogurayama"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:ogurayama">
+<p>ogurayama (premium ceremonial)</p>
+<p>marine umami / creamy / mild sweet</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:yamamasa-koyamaen:shikibu-no-mukashi">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:shikibu-no-mukashi"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:shikibu-no-mukashi">
+<p>shikibu no mukashi (high ceremonial)</p>
+<p>toasted sesame / creamy umami / lingering</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:yamamasa-koyamaen:matsukaze">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:yamamasa-koyamaen:matsukaze"></button>
+<div class="item-body" data-body-id="item:yamamasa-koyamaen:matsukaze">
+<p>matsukaze (daily usucha)</p>
+<p>balanced / mild / light bitter finish</p>
+</div>
+</div></div>
+</div>
+</div>
+</div></article><article class="card has-divider" data-category="matcha" data-id="zenkyu-matcha" data-neighborhood="anywhere" data-type="product">
+<img alt="zenkyu-matcha" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/zenkyu-matcha.jpg"/>
+<div class="cinfo-inner" style="padding:0 0 12px;">
+<div class="cinfo-text">
+<p>zenkyu matcha</p>
+<p class="tag-label">
+            anywhere
+            <span class="tag-sep">/</span> matcha
+          </p>
+</div>
+<button aria-label="mark as visited" class="got-btn" data-entry-type="item" data-got-id="place:zenkyu-matcha"><svg class="icon-default" fill="none" height="11" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path></svg><svg class="icon-done" fill="none" height="11" style="display:none;" viewbox="0 0 14 11" width="14"><path d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path></svg></button>
+<button class="cbv-square" data-check-id="place:zenkyu-matcha"><svg fill="none" height="22" viewbox="0 0 14 17" width="18" xmlns="http://www.w3.org/2000/svg"><path class="bm-fill bm-stroke" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke-linejoin="round" stroke-width="1"></path></svg></button>
+</div>
+<div class="items-section">
+<button class="items-toggle">
+<span class="items-chevron"><svg fill="none" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M2 4L6 8L10 4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span>
+<span class="items-toggle-label">3 varieties</span>
+</button>
+<div class="items-list">
+<div class="item" data-item-check-id="item:zenkyu-matcha:single-origin-okumidori">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:single-origin-okumidori"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:single-origin-okumidori">
+<p>single origin okumidori (single cultivar)</p>
+<p>chestnut sweet / creamy</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:zenkyu-matcha:signature-blend">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:signature-blend"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:signature-blend">
+<p>signature blend (ceremonial)</p>
+<p>smooth umami / toasty nutty / well-balanced</p>
+</div>
+</div></div>
+</div><div class="item" data-item-check-id="item:zenkyu-matcha:uji-latte-blend">
+<div class="iinfo"><div class="item-row">
+<button class="item-check" data-check-id="item:zenkyu-matcha:uji-latte-blend"></button>
+<div class="item-body" data-body-id="item:zenkyu-matcha:uji-latte-blend">
+<p>uji latte blend (latte-grade)</p>
+<p>bold umami / creamy / nutty / latte-forward</p>
+</div>
+</div></div>
+</div>
+</div>
 </div></article><article class="card has-divider" data-category="skincare" data-id="anessa-gold" data-neighborhood="anywhere" data-type="product"><img alt="anessa-gold" class="card-img" onerror="this.onerror=null;this.style.background='#5533FF';this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';" src="images/anessa-perfect-uv-sunscreen-gold.jpg"/><div class="cinfo-inner" style="padding:0 0 12px;">
 <div class="cinfo-text">
 <p>anessa · perfect uv sunscreen (gold)</p>
@@ -1221,12 +1669,53 @@
   const state={n:"anywhere",c:"anything",s:"all"};
 
   // --- collapse toggle ---
-  document.querySelectorAll(".items-toggle").forEach(btn=>{
-    btn.addEventListener("click",e=>{
+  document.addEventListener("click", e=>{
+    const btn = e.target.closest(".items-toggle");
+    if(btn){
       e.stopPropagation();
       btn.closest(".items-section").classList.toggle("open");
-    });
+      return;
+    }
+    // Brand row tap to expand (whole row, not just chevron)
+    const brandItem = e.target.closest(".brand-item");
+    if(brandItem && !e.target.closest(".sub-item") && !e.target.closest(".item-check")){
+      e.stopPropagation();
+      brandItem.classList.toggle("expanded");
+      return;
+    }
   });
+
+  // Sync: checking a variety → check its brand card got-btn + ikedaya brand item
+  // Checking ikedaya brand item → check all its varieties on brand card
+  function syncMatcha(changedId){
+    // changedId could be item:horii-shichimeien:narino or item:ikedaya:horii-shichimeien
+    const parts = changedId.split(":");
+    if(parts.length === 3 && parts[0] === "item"){
+      const brandId = parts[1];
+      const varSlug = parts[2];
+
+      if(brandId === "ikedaya"){
+        // Checked a brand at ikedaya — sync all varieties on brand card
+        const isChecked = chk.has(changedId);
+        if(isChecked){
+          // Also check the brand card's got-btn
+          chk.add("place:" + varSlug);
+        }
+      } else {
+        // Checked a variety — check if any variety of this brand is done
+        const anyDone = [...chk].some(id => id.startsWith("item:" + brandId + ":"));
+        const brandPlaceId = "place:" + brandId;
+        const ikedayaBrandId = "item:ikedaya:" + brandId;
+        if(anyDone){
+          chk.add(brandPlaceId);
+          chk.add(ikedayaBrandId);
+        } else {
+          chk.delete(brandPlaceId);
+          chk.delete(ikedayaBrandId);
+        }
+      }
+    }
+  }
 
   function cardDone(c){
     const btn=c.querySelector(".check-btn,.cbv-square");
@@ -1656,6 +2145,7 @@
   function toggle(id, card){
     const wasDone = card ? cardDone(card) : false;
     chk.has(id)?chk.delete(id):chk.add(id);
+    syncMatcha(id);
     syncAutoVisit();
     save(chk);
     render();
