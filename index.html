@@ -92,6 +92,7 @@
   .feed{display:grid;grid-template-columns:1fr;gap:0;padding:0;background:var(--paper);}
   .card{background:var(--paper);padding:16px 0;display:block;}
   .card.hidden{display:none;}
+  .card.collapsing{overflow:hidden;transition:max-height 0.42s cubic-bezier(0.4,0,0.2,1),opacity 0.2s ease,margin 0.42s cubic-bezier(0.4,0,0.2,1),padding 0.42s cubic-bezier(0.4,0,0.2,1);max-height:0!important;opacity:0;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important;}
   .cinfo{display:flex;flex-direction:column;gap:4px;padding:0 0 20px;}
   .cinfo-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .cinfo-text{display:flex;flex-direction:column;gap:4px;flex:1;}
@@ -225,9 +226,9 @@
 
   /* PRIMARY: strike-through then blur out */
   @keyframes strike-blur-fade{
-    0%{opacity:1;filter:blur(0)}
-    55%{opacity:1;filter:blur(0)}
-    100%{opacity:0;filter:blur(14px)}}
+    0%{opacity:1;filter:blur(0);transform:scale(1);}
+    55%{opacity:1;filter:blur(0);transform:scale(1);}
+    100%{opacity:0;filter:blur(14px);transform:scale(0.92);transform-origin:center;}}
   .exit-main{animation:strike-blur-fade .75s ease forwards;pointer-events:none;position:relative;overflow:hidden;}
   .exit-main::after{content:'';position:absolute;top:50%;left:-100%;width:100%;height:2px;
     background:#000;transform:translateY(-50%);
@@ -246,13 +247,22 @@
   .sub-item .item-row{padding-left:0;}
   .sub-item{border-bottom:1px solid #E8E7E3;}
   .sub-item:last-child{border-bottom:none;}
+
+  .view-chip svg path{stroke:currentColor;}
+  .view-chip.on svg path{stroke:#fff;}
+
+  /* BOOKMARK: slide right + fade */
+  @keyframes slide-up-fade{
+    0%{opacity:1;transform:translateY(0);}
+    100%{opacity:0;transform:translateY(-32px);}}
+  .exit-bookmark{animation:slide-up-fade .45s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none;}
 </style>
 </head><body>
 <div class="view-chips" id="view-chips">
 <span class="view-title">tokyo buying guide</span>
-<button class="view-chip on" data-view="all">all</button>
-<button class="view-chip" data-view="want">want</button>
-<button class="view-chip" data-view="got">got</button>
+<button class="view-chip on" data-view="all">list</button>
+<button class="view-chip" data-view="want"><svg width="11" height="14" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;"><path class="chip-bm" d="M1 1.5C1 1.22386 1.22386 1 1.5 1H12.5C12.7761 1 13 1.22386 13 1.5V15.382C13 15.7607 12.5769 15.9809 12.2764 15.7639L7 12.118L1.72361 15.7639C1.42309 15.9809 1 15.7607 1 15.382V1.5Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg></button>
+<button class="view-chip" data-view="got"><svg width="13" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;"><path class="chip-ck" d="M1.5 5.5L5.5 9.5L12.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <div class="shell">
 <div class="feed-wrap" id="feed-wrap">
@@ -1731,7 +1741,7 @@
       let sOk=true;
       if(state.s==="want") sOk=isWanted&&!isDone;
       else if(state.s==="got") sOk=isDone;
-      // "all" shows everything
+      else if(state.s==="all") sOk=!isDone&&!isWanted; // list: only uncategorised
       c.classList.toggle("hidden",!(nOk&&cOk&&sOk));
     });
   }
@@ -2132,14 +2142,46 @@
 
   const EXIT_DUR = {
     'exit-main': 750,
+    'exit-bookmark': 500,
   };
 
   function dismissCard(card, exitClass){
+    // Phase 1: exit animation (blur/fade/slide)
     card.classList.add(exitClass);
+    const dur = EXIT_DUR[exitClass]||750;
     setTimeout(()=>{
+      // Phase 2: exit animation done — card is invisible (opacity:0)
+      // Keep it invisible, remove animation class, begin height collapse
       card.classList.remove(exitClass);
-      applyFilters();
-    }, EXIT_DUR[exitClass]||750);
+      card.style.opacity = '0';
+      card.style.pointerEvents = 'none';
+      // Capture height while still in flow
+      const h = card.getBoundingClientRect().height;
+      card.style.maxHeight = h + 'px';
+      card.style.overflow = 'hidden';
+      // Force reflow before animating
+      card.getBoundingClientRect();
+      // Animate height collapse — iOS spring feel
+      card.style.transition = [
+        'max-height 0.4s cubic-bezier(0.32,0,0.18,1)',
+        'margin-top 0.4s cubic-bezier(0.32,0,0.18,1)',
+        'margin-bottom 0.4s cubic-bezier(0.32,0,0.18,1)',
+        'padding-top 0.4s cubic-bezier(0.32,0,0.18,1)',
+        'padding-bottom 0.4s cubic-bezier(0.32,0,0.18,1)'
+      ].join(',');
+      card.style.maxHeight = '0';
+      card.style.marginTop = '0';
+      card.style.marginBottom = '0';
+      card.style.paddingTop = '0';
+      card.style.paddingBottom = '0';
+      setTimeout(()=>{
+        // Phase 3: collapse done — apply hidden class, clear inline styles
+        card.classList.add('hidden');
+        card.style.cssText = '';
+        // applyFilters will confirm hidden state based on current filter
+        applyFilters();
+      }, 420);
+    }, dur);
   }
 
   function toggle(id, card){
@@ -2156,7 +2198,8 @@
       // animate out when card is about to disappear from current view
       const willDisappear =
         (state.s==="want" && isDone && !wasDone) ||   // marked done in want view
-        (state.s==="got" && !isDone && wasDone);          // unmarked in got view
+        (state.s==="got" && !isDone && wasDone) ||    // unmarked in got view
+        (state.s==="all" && isDone && !wasDone);      // newly checked in list view
       if(willDisappear){
         dismissCard(card, exitClass);
       } else {
@@ -2171,10 +2214,20 @@
     const cb=e.target.closest(".check-btn");if(cb){toggle(cb.dataset.checkId, cb.closest(".card"));return;}
     const ci=e.target.closest(".cbv-square");if(ci){
       const id=ci.dataset.checkId;
+      const wasWanted=want.has(id);
       want.has(id)?want.delete(id):want.add(id);
       saveWant(want);
-      render();
-      applyFilters();
+      const card=ci.closest(".card");
+      const isNowWanted=want.has(id);
+      // animate off LIST when newly bookmarked — delay render until after animation
+      if(state.s==="all" && isNowWanted && !wasWanted && card){
+        // just update the icon state without triggering a full re-render
+        ci.classList.add("checked");
+        dismissCard(card,"exit-bookmark");
+      } else {
+        render();
+        applyFilters();
+      }
       if(mapInstance) renderMarkers();
       return;
     }
@@ -2183,8 +2236,15 @@
     // got-btn (simple cards)
     const gb=e.target.closest(".got-btn");if(gb){
       const id=gb.dataset.gotId;
+      const wasGot=chk.has(id);
       chk.has(id)?chk.delete(id):chk.add(id);
-      save(chk);render();applyFilters();
+      save(chk);render();
+      const card=gb.closest(".card");
+      if(state.s==="all" && !wasGot && card){
+        dismissCard(card,"exit-main");
+      } else {
+        applyFilters();
+      }
       if(mapInstance) renderMarkers();
       return;
     }
