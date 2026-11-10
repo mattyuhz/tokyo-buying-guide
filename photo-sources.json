@@ -100,5 +100,155 @@
     "source": "https://store.papersky.jp/",
     "file": "images/nov-papersky-online.jpg",
     "alt": "PAPERSKY magazine"
+  },
+  "finetrack-tokyo": {
+    "source": "https://www.finetrack.com/brandstore/",
+    "image": "https://www.finetrack.com/assets/img/brandstore/index/im-mv-01.jpg?220104",
+    "file": "images/audit-finetrack-tokyo.jpg",
+    "alt": "finetrack TOKYO BASE shop sign"
+  },
+  "have-more-curry": {
+    "source": "https://havemorecurry.jp/english/",
+    "image": "https://havemorecurry.jp/wp-content/themes/havemorecurry/images/index/info_01.jpg",
+    "file": "images/audit-have-more-curry.jpg",
+    "alt": "have more curry shop"
+  },
+  "laekker": {
+    "source": "https://www.tv-tokyo.co.jp/adomachi/backnumber/20250405/145847.html",
+    "image": "https://www.tv-tokyo.co.jp/adomachi/backnumber/20250405/images/19.jpg",
+    "file": "images/audit-laekker.jpg",
+    "alt": "laekker shop"
+  },
+  "maguro-to-shari": {
+    "source": "https://www.timeout.com/tokyo/restaurants/maguro-to-shari-shibuya",
+    "image": "https://media.timeout.com/images/105869509/image.jpg",
+    "file": "images/audit-maguro-to-shari.jpg",
+    "alt": "Maguro To Shari seafood bowls"
+  },
+  "pizza-slice": {
+    "source": "https://pizzaslice.jp/pages/all-location",
+    "image": "https://cdn.shopify.com/s/files/1/0392/7624/9133/files/slice-nh1__1.jpg?v=1642255531",
+    "file": "images/audit-pizza-slice.jpg",
+    "alt": "PIZZA SLICE pizza"
+  },
+  "hightide-miyashita": {
+    "source": "https://www.hightide.co.jp/store/",
+    "image": "https://www.hightide.co.jp/wp-content/uploads/2023/09/miyashita00-750x487.jpg",
+    "file": "images/audit-hightide-miyashita.jpg",
+    "alt": "hightide miyashita shop"
+  },
+  "hands-shibuya": {
+    "source": "https://shibuya.hands.net/",
+    "image": "https://info.hands.net/list/assets_c/sb_newlogo_202303_w750.jpg",
+    "file": "images/audit-hands-shibuya.jpg",
+    "alt": "hands shibuya shop"
+  },
+  "loft-shibuya": {
+    "source": "https://www.gotokyo.org/en/spot/445/",
+    "image": "https://www.gotokyo.org/en/spot/445/images/main.webp",
+    "file": "images/audit-loft-shibuya.jpg",
+    "alt": "loft shibuya shop"
+  },
+  "connected": {
+    "source": "https://connectedtokyo.com/pages/%E5%BA%97%E8%88%97%E6%83%85%E5%A0%B1",
+    "image": "https://cdn.shopify.com/s/files/1/0662/0905/4943/files/IMG_9010_600x600.jpg?v=1676631725",
+    "file": "images/audit-connected.jpg",
+    "alt": "connected shop"
+  },
+  "mountain-research": {
+    "source": "https://mountainresearch.jp/pages/dealer",
+    "image": "https://cdn.shopify.com/s/files/1/0769/6518/3772/files/img_dea_str.jpg?v=1693212734",
+    "file": "images/audit-mountain-research.jpg",
+    "alt": "Mountain Research shop sign"
+  },
+  "haritts": {
+    "source": "https://www.timeout.com/tokyo/restaurants/haritts-donuts-coffee",
+    "image": "https://media.timeout.com/images/105051912/image.jpg",
+    "file": "images/audit-haritts.jpg",
+    "alt": "Haritts doughnut"
+  },
+  "nadoya-no-katte": {
+    "source": "https://www.act-locally.com/spots/nadoyanokatte/",
+    "image": "https://www.act-locally.com/wp-content/uploads/2022/06/SI_9916_main.jpg",
+    "file": "images/audit-nadoya-no-katte.jpg",
+    "alt": "nadoya no katte shop"
+  },
+  "no-coffee": {
+    "source": "https://www.timeout.com/tokyo/restaurants/no",
+    "image": "https://media.timeout.com/images/106025424/image.jpg",
+    "file": "images/audit-no-coffee.jpg",
+    "alt": "no coffee shop"
+  },
+  "mukai": {
+    "source": "https://prtimes.jp/main/html/rd/p/000000002.000167032.html",
+    "image": "https://prcdn.freetls.fastly.net/release_image/167032/2/167032-2-50a6e24e9e5c196a85d6df283c02e14a-2100x1400.jpg?width=1950&height=1350&quality=85%2C65&format=jpeg&auto=webp&fit=bounds&bg-color=fff",
+    "file": "images/audit-mukai.jpg",
+    "alt": "Mukai seafood bowl"
+  },
+  "aelu": {
+    "source": "https://www.aelu.jp/",
+    "image": "https://www.aelu.jp/img/gallery/gallery01.jpg",
+    "file": "images/audit-aelu.jpg",
+    "alt": "AELU ceramics display"
+  },
+  "bullpen": {
+    "source": "https://bullpen-shop.com/pages/about",
+    "image": "https://cdn.shopify.com/s/files/1/0103/4584/0699/files/002228830021_1024x1024.jpg?v=1539838419",
+    "file": "images/audit-bullpen.jpg",
+    "alt": "BULLPEN glassware display"
+  },
+  "kihara-tokyo": {
+    "source": "https://e-kihara.pro/wholesale/",
+    "image": "https://e-kihara.pro/wordpress/wp-content/uploads/2015/11/keyvisual15.jpg",
+    "file": "images/audit-kihara-tokyo.jpg",
+    "alt": "KIHARA ceramics display"
+  },
+  "ikedaya": {
+    "source": "https://yokoso-shinjuku.com/en/shopping/chanoikedaya/",
+    "image": "https://yokoso-shinjuku.com/en/wp-content/uploads/2018/02/chanoikedaya_top-660x355.jpg",
+    "file": "images/audit-ikedaya.jpg",
+    "alt": "ikedaya shop"
+  },
+  "seishoen": {
+    "source": "https://locally.matcha-jp.com/en/25873",
+    "image": "https://resources.matcha-jp.com/resize/720x2000/2025/09/24-245074.webp",
+    "file": "images/audit-seishoen.jpg",
+    "alt": "seishoen shop"
+  },
+  "white-mountaineering": {
+    "source": "https://www.timeout.com/tokyo/shopping/white-mountaineering",
+    "image": "https://media.timeout.com/images/102588717/image.jpg",
+    "file": "images/audit-white-mountaineering.jpg",
+    "alt": "white mountaineering shop"
+  },
+  "paddlers-coffee": {
+    "source": "https://www.timeout.com/tokyo/restaurants/paddlers-coffee-nishihara",
+    "image": "https://media.timeout.com/images/106326656/image.jpg",
+    "file": "images/audit-paddlers-coffee.jpg",
+    "alt": "paddlers coffee shop"
+  },
+  "switch-coffee": {
+    "source": "https://ccc.goodcoffee.me/coffeeshop/switch-coffee-tokyo-yoyogihachiman/",
+    "image": "https://ccc.goodcoffee.me/wp-content/uploads/Switch-Yoyogi-Hachiman-01-900x600.jpg",
+    "file": "images/audit-switch-coffee.jpg",
+    "alt": "switch coffee shop"
+  },
+  "tsuta": {
+    "source": "https://www.timeout.com/tokyo/restaurants/japanese-soba-noodles-tsuta",
+    "image": "https://media.timeout.com/images/105619885/image.jpg",
+    "file": "images/audit-tsuta.jpg",
+    "alt": "Tsuta ramen"
+  },
+  "map-camera": {
+    "source": "https://digtokyo.jp/en/sc/015/",
+    "image": "https://digtokyo.jp/wp-content/uploads/posts/sc/001-100/015/mapcamera.jpg",
+    "file": "images/audit-map-camera.jpg",
+    "alt": "map camera shop"
+  },
+  "yodobashi-shinjuku": {
+    "source": "https://digtokyo.jp/en/sc/015/",
+    "image": "https://digtokyo.jp/wp-content/uploads/posts/sc/001-100/015/yodobashi.jpg",
+    "file": "images/audit-yodobashi-shinjuku.jpg",
+    "alt": "yodobashi shinjuku shop"
   }
 }
