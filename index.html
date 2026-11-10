@@ -218,8 +218,8 @@
     font-size:11px !important;letter-spacing:.06em !important;text-transform:uppercase !important;
     color:#5533FF !important;text-decoration:none !important;display:block;margin-top:6px;}
   .leaflet-popup-close-button{display:none !important;}
-  /* hide leaflet attribution */
-  .leaflet-control-attribution{display:none;}
+  /* Keep map data attribution visible. */
+  .leaflet-control-attribution{display:block;margin-right:80px!important;}
   .leaflet-popup-tip-container{display:none !important;}
 
   /* --- exit animations --- */
@@ -2029,8 +2029,8 @@
     if(typeof L==="undefined"){document.getElementById("map-container").textContent="Map unavailable. Use the shop directions links below.";return;}
     mapInitialized=true;
     mapInstance=L.map("map-container",{zoomControl:true}).setView([35.6750,139.7030],14);
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{
-      maxZoom:19, attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(mapInstance);
     renderMarkers();
     // locate button
