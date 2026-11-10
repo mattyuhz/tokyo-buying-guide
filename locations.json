@@ -1,0 +1,122 @@
+{
+  "kaikado-kyoto": {
+    "lat": 34.9939448,
+    "lng": 135.7653604,
+    "checked": "2026-11-10",
+    "source": "https://www.kaikado.jp/information_en/",
+    "officialSource": "https://www.kaikado.jp/information_en/",
+    "method": "official embedded map pin / official directions link"
+  },
+  "yamatomichi-kyoto": {
+    "lat": 34.993153,
+    "lng": 135.7663066,
+    "checked": "2026-11-10",
+    "source": "https://www.yamatomichi.com/en/stores/295406",
+    "officialSource": "https://www.yamatomichi.com/en/stores/295406",
+    "method": "official embedded map pin / official directions link"
+  },
+  "yamatomichi-kamakura": {
+    "lat": 35.3156428,
+    "lng": 139.5475563,
+    "checked": "2026-11-10",
+    "source": "https://www.yamatomichi.com/en/stores/347511",
+    "officialSource": "https://www.yamatomichi.com/en/stores/347511",
+    "method": "official embedded map pin / official directions link"
+  },
+  "moonlightgear": {
+    "lat": 35.6928774,
+    "lng": 139.77688,
+    "checked": "2026-11-10",
+    "source": "https://vivobarefoot.co.jp/blogs/partner-shop/moonlightgear-tokyo",
+    "officialSource": "https://vivobarefoot.co.jp/blogs/partner-shop/moonlightgear-tokyo",
+    "method": "official embedded map pin / official directions link"
+  },
+  "sokit": {
+    "lat": 35.74071386,
+    "lng": 139.65544097,
+    "checked": "2026-11-10",
+    "source": "https://map.yahoo.co.jp/v3/place/jW1auf5IK8o",
+    "officialSource": null,
+    "method": "shop directory coordinate, cross-checked address"
+  },
+  "goldwin-harajuku": {
+    "lat": 35.667667,
+    "lng": 139.70506,
+    "checked": "2026-11-10",
+    "source": "https://www.fashion-press.net/maps/55904",
+    "officialSource": "https://www.goldwin-global.com/jp/shoplist/index.html",
+    "method": "shop directory coordinate, cross-checked address"
+  },
+  "hikers-depot": {
+    "lat": 35.6959408,
+    "lng": 139.5614022,
+    "checked": "2026-11-10",
+    "source": "https://hikersdepot.jp/pages/about",
+    "officialSource": "https://hikersdepot.jp/pages/about",
+    "method": "official embedded map pin / official directions link"
+  },
+  "answer4-takao": {
+    "lat": 35.6414311,
+    "lng": 139.2836083,
+    "checked": "2026-11-10",
+    "source": "https://ko52takao.jp/",
+    "officialSource": "https://ko52takao.jp/",
+    "method": "official embedded map pin / official directions link"
+  },
+  "hario-cafe-tokyo": {
+    "lat": 35.665061,
+    "lng": 139.740959,
+    "checked": "2026-11-10",
+    "source": "https://hariocafe-lwf.com/",
+    "officialSource": "https://hariocafe-lwf.com/",
+    "method": "official embedded map pin / official directions link"
+  },
+  "kurasu-kyoto": {
+    "lat": 34.9863776,
+    "lng": 135.7538511,
+    "checked": "2026-11-10",
+    "source": "https://kurasu.kyoto/pages/kurasu-kyoto-stand-cafe",
+    "officialSource": null,
+    "method": "shop directory coordinate, cross-checked address"
+  },
+  "syuro-tokyo": {
+    "lat": 35.702758,
+    "lng": 139.783971,
+    "checked": "2026-11-10",
+    "source": "https://syuro.co.jp/shops/syuro/",
+    "officialSource": "https://syuro.co.jp/shops/syuro/",
+    "method": "official embedded map pin / official directions link"
+  },
+  "graf-osaka": {
+    "lat": 34.6904499,
+    "lng": 135.4913527,
+    "checked": "2026-11-10",
+    "source": "https://www.graf-d3.life/access/",
+    "officialSource": "https://www.graf-d3.com/shop/",
+    "method": "shop directory coordinate, cross-checked address"
+  },
+  "tsutaya-daikanyama": {
+    "lat": 35.649059,
+    "lng": 139.6996224,
+    "checked": "2026-11-10",
+    "source": "https://store.tsite.jp/daikanyama/english/",
+    "officialSource": "https://store.tsite.jp/daikanyama/english/",
+    "method": "official embedded map pin / official directions link"
+  },
+  "asics-harajuku": {
+    "lat": 35.672101,
+    "lng": 139.705822,
+    "checked": "2026-11-10",
+    "source": "https://www.fashion-press.net/maps/29285",
+    "officialSource": null,
+    "method": "shop directory coordinate, cross-checked address"
+  },
+  "salomon-shibuya": {
+    "lat": 35.665131,
+    "lng": 139.703186,
+    "checked": "2026-11-10",
+    "source": "https://msearch.gsi.go.jp/address-search/AddressSearch?q=東京都渋谷区神宮前6-16-13",
+    "officialSource": "https://salomon.jp/a/archives/columns/3827",
+    "method": "GSI geocoding of official 6-16-13 Jingumae address"
+  }
+}

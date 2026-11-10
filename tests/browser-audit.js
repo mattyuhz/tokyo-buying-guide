@@ -81,12 +81,11 @@ async (page) => {
   assert(await page.locator('.nov-empty').isVisible(), 'empty search feedback');
   await page.locator('.nov-search').fill('');
   await page.locator('#map-fab').click();
-  await page.locator('.leaflet-control-zoom-in').click();
-  await page.locator('.leaflet-control-zoom-out').click();
-  await page.locator('.leaflet-marker-icon').first().click();
+  await page.waitForTimeout(350);
+
+  await page.locator('.leaflet-marker-icon[data-place-id="sokit"]').click();
   assert(await page.locator('.leaflet-popup a').isVisible(), 'map popup directions');
-  await page.locator('.map-extra summary').click();
-  assert(await page.locator('.map-extra a').count() === 15, 'new shop directions');
+  assert(await page.locator('.leaflet-marker-icon[data-place-id]').count() >= 15, 'new shops have map pins');
   await page.locator('#map-fab').click();
   assert(await page.locator('.nov-search').isVisible(), 'return from map');
   await page.locator('.nov-destinations summary').press('Enter');
