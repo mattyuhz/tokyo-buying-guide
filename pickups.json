@@ -1,0 +1,660 @@
+{
+  "items": [
+    {
+      "id": "0",
+      "brand": "MONTBELL",
+      "name": "Plasma 1000 Alpine Down Parka",
+      "tier": "S★",
+      "objective": "Acatenango / Cold alpine",
+      "description": "Elite warmth-to-weight · Static insulation",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "1",
+      "brand": "MONTBELL",
+      "name": "Dynamo Wind Pants",
+      "tier": "S",
+      "objective": "Acatenango / 3-season",
+      "description": "Wind protection · Alpha Direct pairing",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "2",
+      "brand": "MONTBELL",
+      "name": "Tachyon Wind Pants",
+      "tier": "S",
+      "objective": "Summer Sierra / Fastpacking",
+      "description": "Minimal weight · Lower durability",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "3",
+      "brand": "MONTBELL",
+      "name": "EX Light Down Jacket",
+      "tier": "A",
+      "objective": "Summer Sierra / 3-season",
+      "description": "Ultralight camp warmth · Gear overlap",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "4",
+      "brand": "MONTBELL",
+      "name": "UL Down Jacket",
+      "tier": "A",
+      "objective": "Backpacking / Travel",
+      "description": "Already owned · Existing insulation",
+      "kind": "choose",
+      "owned": true
+    },
+    {
+      "id": "5",
+      "brand": "MONTBELL",
+      "name": "Thermawrap Series",
+      "tier": "A",
+      "objective": "Damp conditions / Shoulder season",
+      "description": "Synthetic warmth · Existing gear overlap",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "6",
+      "brand": "MONTBELL",
+      "name": "Winter Gloves",
+      "tier": "—",
+      "objective": "Acatenango / Winter alpine",
+      "description": "Cold-finger protection · Fit critical",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "7",
+      "brand": "MONTBELL",
+      "name": "Down Camp Shoes",
+      "tier": "A",
+      "objective": "Cold camps / Backpacking",
+      "description": "Sleep-system warmth · Packable",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "8",
+      "brand": "YAMATOMICHI",
+      "name": "5-Pocket Pants",
+      "tier": "S",
+      "objective": "Sierra hiking / Travel",
+      "description": "Mobility · Quick-drying · Fit check",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "9",
+      "brand": "YAMATOMICHI",
+      "name": "UL Shirt",
+      "tier": "A",
+      "objective": "Summer hiking / Travel",
+      "description": "Airflow · Sun protection",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "10",
+      "brand": "YAMATOMICHI",
+      "name": "MINI2 Backpack",
+      "tier": "A",
+      "objective": "Ultralight backpacking",
+      "description": "Minimalist carry · Pack overlap",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "11",
+      "brand": "YAMATOMICHI",
+      "name": "Other Technical Apparel",
+      "tier": "—",
+      "objective": "Hiking / Everyday",
+      "description": "Japan-exclusive fabrics · Try on",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "12",
+      "brand": "FINETRACK",
+      "name": "Drylayer",
+      "tier": "S★",
+      "objective": "Wet alpine / Winter",
+      "description": "Moisture management · Next-to-skin",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "13",
+      "brand": "FINETRACK",
+      "name": "Technical Gloves",
+      "tier": "—",
+      "objective": "Winter alpine / Acatenango",
+      "description": "Dexterity · Weather protection",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "14",
+      "brand": "FINETRACK",
+      "name": "Technical Layers",
+      "tier": "—",
+      "objective": "High-output alpine",
+      "description": "Moisture management · Fit check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "15",
+      "brand": "STATIC",
+      "name": "Active Insulation",
+      "tier": "—",
+      "objective": "Cold hiking / Shoulder season",
+      "description": "Breathability · Alpha Direct overlap",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "16",
+      "brand": "STATIC",
+      "name": "Technical Apparel",
+      "tier": "—",
+      "objective": "Fastpacking / Alpine",
+      "description": "Innovative textiles · Discovery",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "17",
+      "brand": "TETON BROS",
+      "name": "Technical Midlayers",
+      "tier": "—",
+      "objective": "Winter hiking / Alpine",
+      "description": "Active insulation · Fabric evaluation",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "18",
+      "brand": "TETON BROS",
+      "name": "Technical Shells",
+      "tier": "—",
+      "objective": "Wet alpine / Winter",
+      "description": "Weather protection · Tempest overlap",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "19",
+      "brand": "TETON BROS",
+      "name": "Japan-Exclusive Apparel",
+      "tier": "—",
+      "objective": "Hiking / Everyday",
+      "description": "Unique fabrics · Try on",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "20",
+      "brand": "GOLDWIN / TNF PURPLE LABEL",
+      "name": "Goldwin Technical Apparel",
+      "tier": "—",
+      "objective": "Travel / Everyday",
+      "description": "Clean design · Fit evaluation",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "21",
+      "brand": "GOLDWIN / TNF PURPLE LABEL",
+      "name": "TNF Purple Label Outerwear",
+      "tier": "—",
+      "objective": "Urban / Travel",
+      "description": "Japan-exclusive styling · Lifestyle focus",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "22",
+      "brand": "GOLDWIN / TNF PURPLE LABEL",
+      "name": "Technical Pants",
+      "tier": "—",
+      "objective": "Hiking / Travel",
+      "description": "Mobility · Yamatomichi comparison",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "23",
+      "brand": "AND WANDER",
+      "name": "Technical Outerwear",
+      "tier": "—",
+      "objective": "Hiking / Technical lifestyle",
+      "description": "Design appeal · Price-performance check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "24",
+      "brand": "AND WANDER",
+      "name": "Technical Pants",
+      "tier": "—",
+      "objective": "Hiking / Travel",
+      "description": "Fabric performance · Weight comparison",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "25",
+      "brand": "AND WANDER",
+      "name": "Bags & Accessories",
+      "tier": "—",
+      "objective": "Travel / Everyday",
+      "description": "Distinctive styling · Gear overlap",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "26",
+      "brand": "CAYL",
+      "name": "Technical Apparel",
+      "tier": "—",
+      "objective": "Hiking / Everyday",
+      "description": "Korean technical design · Price check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "27",
+      "brand": "CAYL",
+      "name": "Baekdu 2 X-Pac 55L",
+      "tier": "—",
+      "objective": "Multi-day backpacking",
+      "description": "Capacity · Existing pack overlap",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "28",
+      "brand": "CAYL",
+      "name": "Commute Pack X-Pac",
+      "tier": "—",
+      "objective": "Urban / Travel",
+      "description": "Weather-resistant carry · Style",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "29",
+      "brand": "CAYL",
+      "name": "Accessories",
+      "tier": "—",
+      "objective": "Running / Everyday",
+      "description": "Compact utility · Discovery",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "30",
+      "brand": "RAWLOW MOUNTAIN WORKS",
+      "name": "Bambi Backpack",
+      "tier": "A",
+      "objective": "Day hiking / Travel",
+      "description": "Compact carry · Pack overlap",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "31",
+      "brand": "RAWLOW MOUNTAIN WORKS",
+      "name": "Tabitibi Tote",
+      "tier": "—",
+      "objective": "Travel / Everyday",
+      "description": "Convertible carry · Cottage design",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "32",
+      "brand": "RAWLOW MOUNTAIN WORKS",
+      "name": "Small Bags & Accessories",
+      "tier": "—",
+      "objective": "Travel / Organization",
+      "description": "Compact utility · Discovery",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "33",
+      "brand": "PAAGOWORKS",
+      "name": "Technical Backpacks",
+      "tier": "—",
+      "objective": "Hiking / Fastpacking",
+      "description": "Organization · Fit check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "34",
+      "brand": "PAAGOWORKS",
+      "name": "Running Packs",
+      "tier": "—",
+      "objective": "Trail running",
+      "description": "Accessible storage · Distance 15 overlap",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "35",
+      "brand": "ATELIERBLUEBOTTLE",
+      "name": "Camera Shoulder",
+      "tier": "—",
+      "objective": "Travel / Photography",
+      "description": "Camera access · Compact carry",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "36",
+      "brand": "ATELIERBLUEBOTTLE",
+      "name": "Small Bags & Accessories",
+      "tier": "—",
+      "objective": "Travel / Everyday",
+      "description": "Minimalist design · Discovery",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "37",
+      "brand": "OTHER OUTDOOR BRANDS",
+      "name": "AXESQUIN / ELEMENTS Apparel",
+      "tier": "—",
+      "objective": "Hiking / Technical lifestyle",
+      "description": "Distinctive construction · Fit check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "38",
+      "brand": "OTHER OUTDOOR BRANDS",
+      "name": "Highland Designs Down Clothing",
+      "tier": "—",
+      "objective": "Cold camps / Backpacking",
+      "description": "Ultralight insulation · Montbell overlap",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "39",
+      "brand": "OTHER OUTDOOR BRANDS",
+      "name": "RIDGE MOUNTAIN GEAR Caps",
+      "tier": "—",
+      "objective": "Hiking / Everyday",
+      "description": "Sun protection · Fit",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "40",
+      "brand": "OTHER OUTDOOR BRANDS",
+      "name": "Answer4 Running Accessories",
+      "tier": "—",
+      "objective": "Trail running",
+      "description": "Running utility · Discovery",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "41",
+      "brand": "HARIO",
+      "name": "Kasuya Mini Pouring Kettle",
+      "tier": "A",
+      "objective": "Office V60",
+      "description": "Precision pouring · Non-electric",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "42",
+      "brand": "HARIO",
+      "name": "Original Kasuya Kettle",
+      "tier": "A",
+      "objective": "Home / Office V60",
+      "description": "Flow control · Compare Mini",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "43",
+      "brand": "HARIO",
+      "name": "V60 NEO",
+      "tier": "—",
+      "objective": "Filter coffee",
+      "description": "Brewing experimentation · V60 overlap",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "44",
+      "brand": "1ZPRESSO",
+      "name": "ZP6 Special",
+      "tier": "S★",
+      "objective": "Filter coffee / Travel",
+      "description": "Clarity-focused grinding · Price check",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "45",
+      "brand": "TAKAHIRO",
+      "name": "Shizuku 0.5L",
+      "tier": "S",
+      "objective": "Office V60",
+      "description": "Precision pouring · Kasuya alternative",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "46",
+      "brand": "ORIGAMI",
+      "name": "Pinn Dripper",
+      "tier": "—",
+      "objective": "Filter coffee",
+      "description": "Alternative geometry · V60 comparison",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "47",
+      "brand": "KALITA",
+      "name": "Tsubame Wave 155",
+      "tier": "A",
+      "objective": "Small-batch filter coffee",
+      "description": "Flat-bottom brewing · Craftsmanship",
+      "kind": "named",
+      "owned": false
+    },
+    {
+      "id": "48",
+      "brand": "MUNIEQ",
+      "name": "Tetra Drip",
+      "tier": "A",
+      "objective": "Backpacking / Travel coffee",
+      "description": "Flat-pack design · Minimal bulk",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "49",
+      "brand": "EVERNEW",
+      "name": "Titanium Cups",
+      "tier": "A",
+      "objective": "Backpacking / Coffee",
+      "description": "Ultralight · Durable",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "50",
+      "brand": "KAIKADO",
+      "name": "Handmade Tea Canister",
+      "tier": "S★",
+      "objective": "Home / Tea & Coffee",
+      "description": "Heritage craftsmanship · Keepsake",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "51",
+      "brand": "IIHOSHI PORCELAIN",
+      "name": "Ceramic Cups & Tableware",
+      "tier": "—",
+      "objective": "Home / Coffee",
+      "description": "Tactile ceramics · Everyday use",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "52",
+      "brand": "SYURO",
+      "name": "Storage Canisters",
+      "tier": "—",
+      "objective": "Home / Coffee storage",
+      "description": "Minimalist metalwork · Practical",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "53",
+      "brand": "GRAF",
+      "name": "SUNAO Cutlery",
+      "tier": "—",
+      "objective": "Home / Everyday",
+      "description": "Industrial design · Ergonomics",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "54",
+      "brand": "COFFEE / TEA / BOOKS",
+      "name": "Japanese Specialty Coffee Beans",
+      "tier": "—",
+      "objective": "Home V60",
+      "description": "Japanese roasters · Unique lots",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "55",
+      "brand": "COFFEE / TEA / BOOKS",
+      "name": "Japanese Matcha & Tea",
+      "tier": "—",
+      "objective": "Home / Tea ritual",
+      "description": "Regional producers · Freshness",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "56",
+      "brand": "COFFEE / TEA / BOOKS",
+      "name": "Architecture & Design Books",
+      "tier": "—",
+      "objective": "Design inspiration",
+      "description": "Japan-specific editions · Hard to source",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "57",
+      "brand": "COFFEE / TEA / BOOKS",
+      "name": "PAPERSKY Publications",
+      "tier": "—",
+      "objective": "Travel / Outdoor culture",
+      "description": "Editorial design · Collectible",
+      "kind": "choose",
+      "owned": false
+    },
+    {
+      "id": "58",
+      "brand": "ASICS",
+      "name": "Japan-Market Running Shoes",
+      "tier": "—",
+      "objective": "Road running / Travel",
+      "description": "Fit evaluation · Exclusive colorways",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "59",
+      "brand": "SALOMON",
+      "name": "Trail-Running Shoes",
+      "tier": "—",
+      "objective": "Trail running / Hiking",
+      "description": "Grip · Wide-forefoot fit check",
+      "kind": "browse",
+      "owned": false
+    },
+    {
+      "id": "60",
+      "brand": "OTHER FOOTWEAR",
+      "name": "Japanese Trail-Running Shoes",
+      "tier": "—",
+      "objective": "Running / Hiking",
+      "description": "Specialty models · Fit first",
+      "kind": "browse",
+      "owned": false
+    }
+  ],
+  "destinations": [
+    {
+      "heading": "TOKYO — STORES",
+      "stores": true,
+      "entries": [
+        "MoonlightGear",
+        "Run boys! Run girls!",
+        "sokit",
+        "El Calafate",
+        "vic2",
+        "RUNPOYA",
+        "Trippers",
+        "BEAVER Harajuku",
+        "SORA",
+        "Specialty coffee retailers",
+        "Design and homeware shops"
+      ]
+    },
+    {
+      "heading": "KAMAKURA — STORES",
+      "stores": true,
+      "entries": [
+        "Yamatomichi",
+        "Tabisuke Tabizo / T2 Experience Store"
+      ]
+    },
+    {
+      "heading": "KYOTO — STORES",
+      "stores": true,
+      "entries": [
+        "Yamatomichi Kyoto",
+        "Kaikado",
+        "Specialty coffee and design shops"
+      ]
+    },
+    {
+      "heading": "OSAKA — STORES",
+      "stores": true,
+      "entries": [
+        "Montbell",
+        "Outdoor boutiques",
+        "Running specialty stores",
+        "Coffee equipment retailers"
+      ]
+    }
+  ]
+}
