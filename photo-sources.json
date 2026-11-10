@@ -1,0 +1,104 @@
+{
+  "yamatomichi-kyoto": {
+    "image": "https://cdns3.yamatomichi.com/wp-content/uploads/2023/05/1600x900kyoto_main_v2.jpg",
+    "source": "https://www.yamatomichi.com/en/stores/295406",
+    "file": "images/nov-yamatomichi-kyoto.jpg",
+    "alt": "yamatomichi kyoto shop"
+  },
+  "yamatomichi-kamakura": {
+    "image": "https://cdns3.yamatomichi.com/wp-content/uploads/2019/04/260710_kamakura-shop_pc_001.jpg",
+    "source": "https://www.yamatomichi.com/en/stores/347511",
+    "file": "images/nov-yamatomichi-kamakura.jpg",
+    "alt": "yamatomichi kamakura shop"
+  },
+  "salomon-shibuya": {
+    "image": "https://media.salomon.hanasake.jp/uploads/2024/10/1.jpg",
+    "source": "https://salomon.jp/a/archives/columns/3827",
+    "file": "images/nov-salomon-shibuya.jpg",
+    "alt": "salomon shibuya shop"
+  },
+  "kaikado-kyoto": {
+    "image": "https://www.kaikado.jp/wp-content/themes/kaikado/common/information_img/information_img01.jpg",
+    "source": "https://www.kaikado.jp/information_en/",
+    "file": "images/nov-kaikado-kyoto.jpg",
+    "alt": "kaikado kyoto shop"
+  },
+  "moonlightgear": {
+    "image": "https://vivobarefoot.co.jp/cdn/shop/articles/a268365ee58593100afaa9e2d2286f67_2048x.jpg?v=1655167281",
+    "source": "https://vivobarefoot.co.jp/blogs/partner-shop/moonlightgear-tokyo",
+    "file": "images/nov-moonlightgear.jpg",
+    "alt": "moonlightgear shop"
+  },
+  "sokit": {
+    "image": "https://web.goout.jp/app/uploads/2026/03/DSCF3626.jpg",
+    "source": "https://web.goout.jp/spot/472175/",
+    "file": "images/nov-sokit.jpg",
+    "alt": "sokit shop"
+  },
+  "goldwin-harajuku": {
+    "image": "https://images.squarespace-cdn.com/content/v1/5896fb2c3a041168c4bb976e/6ecca62a-505d-4200-a571-d6856170afdb/goldwin_harajuku_20221027_001.jpg",
+    "source": "https://www.hayatsuarchitects.com/goldwin-0",
+    "file": "images/nov-goldwin-harajuku.jpg",
+    "alt": "goldwin harajuku shop"
+  },
+  "hikers-depot": {
+    "image": "https://hikersdepot.jp/cdn/shop/files/DSC00156.jpg?v=1713425958",
+    "source": "https://hikersdepot.jp/pages/about",
+    "file": "images/nov-hikers-depot.jpg",
+    "alt": "hikers depot shop"
+  },
+  "answer4-takao": {
+    "image": "https://ko52takao.jp/assets/images/home/mv/mv06_pc.jpg",
+    "source": "https://ko52takao.jp/",
+    "file": "images/nov-answer4-takao.jpg",
+    "alt": "KO52 Takao building, home to ANSWER4"
+  },
+  "hario-cafe-tokyo": {
+    "image": "https://hariocafe-lwf.com/wp/wp-content/themes/hariocafe/images/sennokuhakukokan_pc.jpg",
+    "source": "https://hariocafe-lwf.com/",
+    "file": "images/nov-hario-cafe-tokyo.jpg",
+    "alt": "hario cafe tokyo shop"
+  },
+  "kurasu-kyoto": {
+    "image": "https://cdn.shopify.com/s/files/1/0801/9439/files/Kurasu_store_1024x1024.jpg?5926114052313249445",
+    "source": "https://kurasu.kyoto/blogs/kurasu-journal/kurasu-kyoto-8-11-open",
+    "file": "images/nov-kurasu-kyoto.jpg",
+    "alt": "kurasu kyoto shop"
+  },
+  "syuro-tokyo": {
+    "image": "https://syuro.co.jp/wp-content/uploads/2023/05/tokyoMvPc.jpg",
+    "source": "https://syuro.co.jp/shops/syuro/",
+    "file": "images/nov-syuro-tokyo.jpg",
+    "alt": "syuro tokyo shop"
+  },
+  "graf-osaka": {
+    "image": "https://www.graf-d3.com/cms/wp-content/uploads/2023/03/shop01-1024x683.jpg",
+    "source": "https://www.graf-d3.com/shop/",
+    "file": "images/nov-graf-osaka.jpg",
+    "alt": "graf osaka shop"
+  },
+  "tsutaya-daikanyama": {
+    "image": "https://store.tsite.jp/static_contents/site/tsite/daikanyama/img/english/key.jpg",
+    "source": "https://store.tsite.jp/daikanyama/english/",
+    "file": "images/nov-tsutaya-daikanyama.jpg",
+    "alt": "tsutaya daikanyama shop"
+  },
+  "asics-harajuku": {
+    "image": "https://cms-static.asics.com/media-libraries/1992/file.jpg",
+    "source": "https://www.asics.com/jp/ja-jp/blog/article/life-with-sports-vol4",
+    "file": "images/nov-asics-harajuku.jpg",
+    "alt": "asics harajuku shop"
+  },
+  "1zpresso-online": {
+    "image": "https://1zpresso.coffee/wp-content/uploads/2023/05/zp6s-si-cy.jpg",
+    "source": "https://1zpresso.coffee/jp/%E8%A3%BD%E5%93%81/zp6-special/",
+    "file": "images/nov-1zpresso-online.jpg",
+    "alt": "ZP6 Special coffee grinder"
+  },
+  "papersky-online": {
+    "image": "https://store.papersky.jp/cdn/shop/files/psm074_fe324d9f-ba7a-4674-a4a1-fd56782b6a9d_1024x.jpg?v=1779840648",
+    "source": "https://store.papersky.jp/",
+    "file": "images/nov-papersky-online.jpg",
+    "alt": "PAPERSKY magazine"
+  }
+}
