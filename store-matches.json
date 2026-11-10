@@ -55,45 +55,74 @@
     ],
     "kaikado-kyoto": [
       "50"
+    ],
+    "sokit": [
+      "17",
+      "18",
+      "19",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "35",
+      "36",
+      "37",
+      "39"
+    ],
+    "goldwin-harajuku": [
+      "20",
+      "22"
+    ],
+    "nanamica-mountain": [
+      "21"
+    ],
+    "hikers-depot": [
+      "38"
+    ],
+    "answer4-takao": [
+      "40"
+    ],
+    "hario-cafe-tokyo": [
+      "41",
+      "42",
+      "43"
+    ],
+    "kurasu-kyoto": [
+      "45",
+      "46",
+      "47",
+      "54"
+    ],
+    "syuro-tokyo": [
+      "52"
+    ],
+    "graf-osaka": [
+      "53"
+    ],
+    "ippodo-marunouchi": [
+      "55"
+    ],
+    "tsutaya-daikanyama": [
+      "56"
+    ],
+    "asics-harajuku": [
+      "58",
+      "60"
+    ],
+    "salomon-shibuya": [
+      "59"
+    ],
+    "1zpresso-online": [
+      "44"
+    ],
+    "papersky-online": [
+      "57"
     ]
   },
-  "unassigned": [
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31",
-    "32",
-    "35",
-    "36",
-    "37",
-    "38",
-    "39",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44",
-    "45",
-    "46",
-    "47",
-    "52",
-    "53",
-    "54",
-    "55",
-    "56",
-    "57",
-    "58",
-    "59",
-    "60"
-  ],
+  "unassigned": [],
   "notes": {
     "montbell-shibuya": "brand match from the original guide; model availability not confirmed",
     "montbell-shinjuku": "brand match from the original guide; model availability not confirmed",
@@ -103,6 +132,138 @@
     "moonlightgear": "brands listed by the retailer; ask about models and Tokyo stock · <a href=\"https://moonlight-gear.com/pages/brands\" target=\"_blank\" rel=\"noopener\">official source ↗</a>",
     "yamatomichi-kamakura": "brand store; check model availability and opening days · <a href=\"https://www.yamatomichi.com/en/stores/347511\" target=\"_blank\" rel=\"noopener\">official source ↗</a>",
     "yamatomichi-kyoto": "brand store; check model availability and opening days · <a href=\"https://www.yamatomichi.com/en/stores/295406\" target=\"_blank\" rel=\"noopener\">official source ↗</a>",
-    "kaikado-kyoto": "maker’s shop; choose material and capacity · <a href=\"https://www.kaikado.jp/information_en/\" target=\"_blank\" rel=\"noopener\">official source ↗</a>"
-  }
+    "kaikado-kyoto": "maker’s shop; choose material and capacity · <a href=\"https://www.kaikado.jp/information_en/\" target=\"_blank\" rel=\"noopener\">official source ↗</a>",
+    "sokit": "brand stockist · specific bag models and Japan-exclusive status need confirmation; atelierBluebottle Camera Shoulder is an enquiry, not a confirmed listing",
+    "goldwin-harajuku": "brand store · choose models and try on; sizes and stock unconfirmed",
+    "nanamica-mountain": "brand relationship and existing guide store lead · confirm Purple Label outerwear selection",
+    "hikers-depot": "product range listed · Highland Designs down jackets and down bib pants; check shop stock",
+    "answer4-takao": "shop listed by KO52 TAKAO · ask about running accessories and opening days",
+    "hario-cafe-tokyo": "HARIO equipment retail confirmed · Kasuya kettle capacities and V60 NEO stock need enquiry",
+    "kurasu-kyoto": "Pinn Dripper listed online; physical-shop stock unconfirmed. Takahiro Shizuku and Kalita Tsubame are documented equipment leads; confirm 0.5L / 155 variants",
+    "syuro-tokyo": "maker’s shop · choose canister size and finish; stock unconfirmed",
+    "graf-osaka": "maker’s shop · SUNAO range confirmed in official online catalogue; choose utensils and check shop stock",
+    "ippodo-marunouchi": "official tea shop · ask about available matcha and tea; quantities and varieties vary",
+    "tsutaya-daikanyama": "architecture and design department confirmed · browse editions in person",
+    "asics-harajuku": "brand store · ask about Japan-market running and trail models; trail selection and fit unconfirmed",
+    "salomon-shibuya": "official store · ask for trail-performance models rather than assuming every shoe is for running",
+    "1zpresso-online": "online fallback only · ZP6 Special product verified; no Japanese walk-in stockist confirmed",
+    "papersky-online": "online fallback only · magazine range verified; no specific Tokyo walk-in magazine stockist confirmed"
+  },
+  "evidence": {
+    "sokit": {
+      "urls": [
+        "https://www.sokit.jp/",
+        "https://nicetime-mountaingallery.jp/?news=cayl-stockist",
+        "https://atelierbluebottle.shop/faq",
+        "https://rawlow.jp/?mode=f4",
+        "https://www.ridge-mountaingear.com/blog/2019/05/02/140405"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "goldwin-harajuku": {
+      "urls": [
+        "https://www.goldwin-global.com/us/shoplist/105-goldwin-harajuku/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "nanamica-mountain": {
+      "urls": [
+        "https://us.nanamica.com/pages/about"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "hikers-depot": {
+      "urls": [
+        "https://hikersdepot.jp/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "answer4-takao": {
+      "urls": [
+        "https://ko52takao.jp/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "hario-cafe-tokyo": {
+      "urls": [
+        "https://hariocafe-lwf.com/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "kurasu-kyoto": {
+      "urls": [
+        "https://jp.kurasu.kyoto/collections/origami",
+        "https://kurasu.kyoto/blogs/kurasu-journal/kurasu-kyoto-8-11-open"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "syuro-tokyo": {
+      "urls": [
+        "https://syuro.co.jp/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "graf-osaka": {
+      "urls": [
+        "https://www.graf-d3.com/shop/",
+        "https://www.graf-onlineshop.com/c/brand/graf/sunao"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "ippodo-marunouchi": {
+      "urls": [
+        "https://global.ippodo-tea.co.jp/pages/store-shin-marunouchi?view=store-detail"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "tsutaya-daikanyama": {
+      "urls": [
+        "https://store.tsite.jp/daikanyama/english/"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "asics-harajuku": {
+      "urls": [
+        "https://www.asics.com/jp/ja-jp/mk/store/asics-flagship-harajuku"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "salomon-shibuya": {
+      "urls": [
+        "https://salomon.jp/a/archives/columns/3827"
+      ],
+      "checked": "2026-11-10",
+      "type": "shopping lead"
+    },
+    "1zpresso-online": {
+      "urls": [
+        "https://1zpresso.coffee/jp/製品/zp6-special/"
+      ],
+      "checked": "2026-11-10",
+      "type": "online fallback"
+    },
+    "papersky-online": {
+      "urls": [
+        "https://store.papersky.jp/"
+      ],
+      "checked": "2026-11-10",
+      "type": "online fallback"
+    }
+  },
+  "onlineOnly": [
+    "44",
+    "57"
+  ]
 }
